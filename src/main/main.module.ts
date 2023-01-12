@@ -21,6 +21,7 @@ import { Users } from 'src/context/courses/application/users';
 import { WebhooksController } from './rest/webhooks/webhooks.controller';
 import { ApplicationWH } from 'src/context/webhoohs/application/application';
 import { WebhooksServices } from './services/webhooks.service';
+import { UseCaseCourses } from 'src/context/courses/domain/courses/useCases/courses';
 @Module({
   imports: [
     HttpModule,
@@ -48,6 +49,7 @@ import { WebhooksServices } from './services/webhooks.service';
     RouteServices,
     ApplicationWH,
     WebhooksServices,
+    UseCaseCourses,
     { provide: 'courseServices', useClass: CoursesServices },
     { provide: 'directiveServices', useClass: DirectiveServices },
     { provide: 'routeServices', useClass: RouteServices },

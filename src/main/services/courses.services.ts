@@ -36,7 +36,17 @@ export class CoursesServices implements courseServicesInterface {
   }
 
   async getAllCourses() {
-    const result = await this.courseModel.find({}).populate('videos');
+    // const result = await this.courseModel.find({}).populate('videos');
+    const result = await this.courseModel.find({});
+    return result;
+  }
+
+  async videosFromCourse(id) {
+    const result = await this.courseModel
+      .findById(id, {
+        videos: 1,
+      })
+      .populate('videos');
     return result;
   }
 

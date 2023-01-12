@@ -3,11 +3,13 @@ import {
   courseServicesInterface,
   InprogressCoursesInterfaces,
 } from '../domain/courses/interfaces/courses.interface';
+import { UseCaseCourses } from '../domain/courses/useCases/courses';
 
 @Injectable()
 export class Courses {
   constructor(
     @Inject('courseServices') private services: courseServicesInterface,
+    private useCaseCourses: UseCaseCourses,
   ) {}
 
   InprogressCourses(data: InprogressCoursesInterfaces) {
@@ -26,6 +28,12 @@ export class Courses {
     return true;
   }
 
+  async videosFromCourse(id) {
+    const videos = await this.services.videosFromCourse(id);
+    const buildPayload = this.useCaseCourses.buildPayloadVideos(videos);
+    return this.createResponse(buildPayload);
+  }
+
   setInprogressCourse() {
     return true;
   }
@@ -38,12 +46,15 @@ export class Courses {
     return this.services.addCourse(data);
   }
 
-  getCourses(id) {
-    return this.services.getCourses(id);
+  async getCourses(id) {
+    const coursesData = await this.services.getCourses(id);
+    return this.createResponse(coursesData);
   }
 
-  getAllCourses() {
-    return this.services.getAllCourses();
+  async getAllCourses() {
+    const coursesData = await this.services.getAllCourses();
+    const buildPayload = this.useCaseCourses.buildPayload(coursesData);
+    return this.createResponse(buildPayload);
   }
 
   async addVideo(data, idCourse) {
@@ -63,5 +74,13 @@ export class Courses {
 
   addRouteToCourse(idCourse, idRoute) {
     return this.services.addRouteToCourse(idCourse, idRoute);
+  }
+
+  createResponse(data: any) {
+    const response = {
+      status: 'ok',
+      payload: data,
+    };
+    return response;
   }
 }

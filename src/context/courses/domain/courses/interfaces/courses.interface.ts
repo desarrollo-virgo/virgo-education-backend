@@ -14,4 +14,5 @@ export interface courseServicesInterface {
   addVideosToCourse: (idVideo, idCourse) => Promise<any>;
   addCategoryToCourse: (idVideo, idCourse) => Promise<any>;
   addRouteToCourse: (idVideo, idRoute) => Promise<any>;
+  videosFromCourse: (idCourse) => Promise<any>;
 }

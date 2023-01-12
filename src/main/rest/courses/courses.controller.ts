@@ -1,8 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Courses } from 'src/context/courses/application/courses';
-import { RoutesCourses } from 'src/context/courses/application/routes';
-import { CategoryServices } from 'src/main/services/category.services';
-import { RouteServices } from 'src/main/services/route.services';
 import {
   CategoryForCoursesDTO,
   InprogressCoursesDTO,
@@ -21,6 +18,12 @@ export class CoursesController {
       return this.courses.getCourses(id);
     }
     return this.courses.getAllCourses();
+  }
+
+  @Get('/:idCourse')
+  videos(@Param() data: any) {
+    const { idCourse } = data;
+    return this.courses.videosFromCourse(idCourse);
   }
 
   @Post('/')
