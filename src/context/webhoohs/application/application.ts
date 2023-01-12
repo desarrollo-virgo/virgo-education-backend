@@ -34,17 +34,20 @@ export class ApplicationWH {
       score: 0,
       guid: courseid,
     };
+
+    let course = await this.serviceCourses.getCoursesForName(name);
+    if (!course) {
+      course = await this.serviceCourses.addCourse(courseData);
+    }
     const videoData = {
       name: titleVideo,
       duration: length,
       thumbnail: thumbnailFileName,
       guid: videoid,
       num,
+      course: course._id,
     };
-    let course = await this.serviceCourses.getCoursesForName(name);
-    if (!course) {
-      course = await this.serviceCourses.addCourse(courseData);
-    }
+
     const video = await this.serviceCourses.addVideo(videoData);
     await this.serviceCourses.addVideosToCourse(video.id, course.id);
   }
