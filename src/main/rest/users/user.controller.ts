@@ -7,11 +7,16 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { Users } from 'src/context/courses/application/users';
+import { Users } from 'src/context/user/application/users';
 
 @Controller('user')
 export class UserController {
   constructor(private user: Users) {}
+
+  @Get('/load/fromFile')
+  loadUsersFromFile() {
+    return this.user.loadDataFromSheet();
+  }
 
   @Get('/:idUser')
   getUser(@Param() data) {

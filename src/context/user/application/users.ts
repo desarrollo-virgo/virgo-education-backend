@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RouteServicesInterface } from '../domain/courses/interfaces/route.interface';
-import { UserServicesInterface } from '../domain/courses/interfaces/user.interface';
+import { GoogleSheetClient } from 'src/main/external/googleSheet/googleSheetClient';
+import { RouteServicesInterface } from '../../courses/domain/courses/interfaces/route.interface';
+import { UserServicesInterface } from '../../courses/domain/courses/interfaces/user.interface';
 
 @Injectable()
 export class Users {
@@ -40,6 +41,11 @@ export class Users {
   async updateTimeProgress(idUser, courseData) {
     const response = await this.services.updateTimeProgress(idUser, courseData);
     return this.createResponse(response);
+  }
+
+  async loadDataFromSheet() {
+    await this.services.readSheet();
+    return this.createResponse({});
   }
 
   createResponse(data) {

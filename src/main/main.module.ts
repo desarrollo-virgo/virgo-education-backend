@@ -17,11 +17,13 @@ import { CategoryController } from './rest/categories/category.controller';
 import { Categories } from 'src/context/courses/application/categories';
 import { UserServices } from './services/user.services';
 import { UserController } from './rest/users/user.controller';
-import { Users } from 'src/context/courses/application/users';
+import { Users } from 'src/context/user/application/users';
 import { WebhooksController } from './rest/webhooks/webhooks.controller';
 import { ApplicationWH } from 'src/context/webhoohs/application/application';
 import { WebhooksServices } from './services/webhooks.service';
 import { UseCaseCourses } from 'src/context/courses/domain/courses/useCases/courses';
+import { GoogleSheetClient } from './external/googleSheet/googleSheetClient';
+
 @Module({
   imports: [
     HttpModule,
@@ -50,6 +52,7 @@ import { UseCaseCourses } from 'src/context/courses/domain/courses/useCases/cour
     ApplicationWH,
     WebhooksServices,
     UseCaseCourses,
+    GoogleSheetClient,
     { provide: 'courseServices', useClass: CoursesServices },
     { provide: 'directiveServices', useClass: DirectiveServices },
     { provide: 'routeServices', useClass: RouteServices },

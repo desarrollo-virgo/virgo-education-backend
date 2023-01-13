@@ -4,6 +4,7 @@ import { UserServicesInterface } from 'src/context/courses/domain/courses/interf
 import { Course, CoursesDocument } from '../db/mongo/schemas/course.schema';
 import { User, UserDocument } from '../db/mongo/schemas/user.schema';
 import { Video } from '../db/mongo/schemas/video.schema';
+import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
 
 export class UserServices implements UserServicesInterface {
   constructor(
@@ -11,6 +12,7 @@ export class UserServices implements UserServicesInterface {
     private userModule: Model<UserDocument>,
     @InjectModel(Course.name)
     private courseModule: Model<CoursesDocument>,
+    private sheetServiceClient: GoogleSheetClient,
   ) {}
   async getAllUser() {
     return await this.userModule.find({});
@@ -157,5 +159,24 @@ export class UserServices implements UserServicesInterface {
         path: 'finished.course',
         model: 'Course',
       });
+  }
+
+  async readSheet() {
+    const result = await this.sheetServiceClient.getInfo();
+    for (let index = 0; index < result.length; index++) {
+      const element = result[index];
+      const userData = {
+        name: element.nombre.trim().toLowerCase(),
+        email: element.correo.trim().toLowerCase(),
+        profile: element.perfil.trim().toLowerCase(),
+        directive: element.institucion.trim().toLowerCase(),
+      };
+      await this.saveUser(userData);
+    }
+    return result;
+  }
+
+  async saveUser(user) {
+    return await this.userModule.create(user);
   }
 }
