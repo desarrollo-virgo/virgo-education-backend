@@ -76,6 +76,39 @@ export class Courses {
     return this.services.addRouteToCourse(idCourse, idRoute);
   }
 
+  async updateCourse(id, data) {
+    let dataToUpdate: any = {};
+    if (data?.name) {
+      dataToUpdate = {
+        name: data.name,
+      };
+    }
+    if (data?.description) {
+      dataToUpdate = {
+        description: data.description,
+      };
+    }
+    if (data?.tags) {
+      dataToUpdate = {
+        tags: data.tags,
+      };
+    }
+
+    if (data?.routes) {
+      dataToUpdate = {
+        route: data.routes,
+      };
+    }
+
+    if (data?.category) {
+      dataToUpdate = {
+        category: data.category,
+      };
+    }
+
+    await this.services.updateCourse(id, dataToUpdate);
+    return this.createResponse({});
+  }
   createResponse(data: any) {
     const response = {
       status: 'ok',

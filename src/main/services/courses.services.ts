@@ -78,4 +78,8 @@ export class CoursesServices implements courseServicesInterface {
     course.route = course.route.concat(idRoute);
     return await this.courseModel.findByIdAndUpdate(idCourse, course);
   }
+
+  async updateCourse(id, data) {
+    return await this.courseModel.findByIdAndUpdate(id, { ...data });
+  }
 }

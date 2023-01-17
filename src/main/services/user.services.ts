@@ -20,7 +20,7 @@ export class UserServices implements UserServicesInterface {
 
   async getUser(idUser) {
     return await this.userModule
-      .findById(idUser)
+      .findOne({ email: idUser })
       .populate({
         path: 'inProgress.course',
         model: 'Course',

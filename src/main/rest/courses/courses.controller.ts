@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Courses } from 'src/context/courses/application/courses';
 import {
   CategoryForCoursesDTO,
@@ -29,6 +29,11 @@ export class CoursesController {
   @Post('/')
   addCourse(@Body() data: any) {
     return this.courses.addCourse(data);
+  }
+
+  @Put('/:idCourse')
+  updateCourse(@Body() data: any, @Param('idCourse') id: string) {
+    return this.courses.updateCourse(id, data);
   }
 
   @Get('/inprogress')
