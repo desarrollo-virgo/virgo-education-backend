@@ -38,7 +38,7 @@ export class UseCaseCourses {
 
   createUrlVideoEmbed(video) {
     const streamManagerID = 80619;
-    const url = 'https://iframe.mediadelivery.net/embed/';
+    const url = 'https://iframe.mediadelivery.net/embed';
     return `${url}/${streamManagerID}/${video.guid}`;
   }
 }
