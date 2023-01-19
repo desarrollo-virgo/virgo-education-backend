@@ -4,10 +4,10 @@ export class UseCaseCourses {
       const courseInfo = {
         id: course._id,
         name: course.name,
-        description: 'educacion',
+        description: course.description,
         tags: course.tags,
         score: course.score,
-        guid: 'f5f103b7-dc5d-415b-ad97-18847d8ee04a',
+        guid: course.guid,
         category: course.category,
         route: course.route,
       };

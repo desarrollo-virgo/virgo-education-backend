@@ -13,10 +13,6 @@ export class CoursesController {
 
   @Get('/')
   getCourses(@Query() data: any) {
-    const { id } = data;
-    if (id) {
-      return this.courses.getCourses(id);
-    }
     return this.courses.getAllCourses();
   }
 
