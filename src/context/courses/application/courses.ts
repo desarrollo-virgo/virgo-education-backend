@@ -51,6 +51,8 @@ export class Courses {
     // coursesData.category.forEach((category) => {
     //   category.id = category._id.toString();
     // });
+    const buildPayload = this.useCaseCourses.buildPayloadVideos(coursesData);
+    coursesData.videos = buildPayload;
     return this.createResponse(coursesData);
   }
 

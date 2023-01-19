@@ -22,6 +22,7 @@ export class UseCaseCourses {
         id: video.id,
         name: video.name,
         duration: video.duration,
+        description: video.description || 'sin descripcion',
         thumbnail: this.createThumbnail(video),
         guid: video.guid,
         position: video.num,
