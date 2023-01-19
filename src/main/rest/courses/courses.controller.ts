@@ -21,6 +21,12 @@ export class CoursesController {
   }
 
   @Get('/:idCourse')
+  infoCourse(@Param() data: any) {
+    const { idCourse } = data;
+    return this.courses.getCourses(idCourse);
+  }
+
+  @Get('/:idCourse/videos')
   videos(@Param() data: any) {
     const { idCourse } = data;
     return this.courses.videosFromCourse(idCourse);

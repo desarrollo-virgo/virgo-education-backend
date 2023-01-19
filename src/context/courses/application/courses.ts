@@ -48,6 +48,9 @@ export class Courses {
 
   async getCourses(id) {
     const coursesData = await this.services.getCourses(id);
+    // coursesData.category.forEach((category) => {
+    //   category.id = category._id.toString();
+    // });
     return this.createResponse(coursesData);
   }
 

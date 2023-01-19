@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { categoriesServicesInterface } from '../domain/courses/interfaces/categories.interface';
+import { categoriesServicesInterface } from '../../courses/domain/courses/interfaces/categories.interface';
 
 @Injectable()
 export class Categories {

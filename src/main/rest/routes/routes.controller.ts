@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { RoutesCourses } from 'src/context/courses/application/routes';
+import { RoutesCourses } from 'src/context/paths/application/routes';
 
 @Controller('route')
 export class RoutesController {

@@ -27,7 +27,23 @@ export class CoursesServices implements courseServicesInterface {
       .findById(id)
       .populate('videos')
       .populate('category')
-      .populate('route');
+      .populate('route')
+      .transform((res) => {
+        const responseTransform = res.toJSON();
+        responseTransform['id'] = responseTransform['_id'];
+        delete responseTransform['_id'];
+        responseTransform.category.forEach((cat) => {
+          cat['id'] = cat['_id'];
+          delete cat['_id'];
+          delete cat['__v'];
+        });
+        responseTransform.videos.forEach((video) => {
+          video['id'] = video['_id'];
+          delete video['_id'];
+          delete video['__v'];
+        });
+        return responseTransform;
+      });
     return result;
   }
 
@@ -36,8 +52,7 @@ export class CoursesServices implements courseServicesInterface {
   }
 
   async getAllCourses() {
-    // const result = await this.courseModel.find({}).populate('videos');
-    const result = await this.courseModel.find({});
+    const result = await this.courseModel.find();
     return result;
   }
 

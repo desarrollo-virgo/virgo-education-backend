@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { Categories } from 'src/context/courses/application/categories';
-import { RoutesCourses } from 'src/context/courses/application/routes';
+import { Categories } from 'src/context/categories/application/categories';
+import { RoutesCourses } from 'src/context/paths/application/routes';
 
 @Controller('category')
 export class CategoryController {

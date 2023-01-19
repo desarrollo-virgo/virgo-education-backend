@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RouteServicesInterface } from '../domain/courses/interfaces/route.interface';
+import { RouteServicesInterface } from '../../courses/domain/courses/interfaces/route.interface';
 
 @Injectable()
 export class RoutesCourses {
