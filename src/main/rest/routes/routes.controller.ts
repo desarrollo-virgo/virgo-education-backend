@@ -13,7 +13,7 @@ export class RoutesController {
 
   @Get('/')
   RouteAllCourses() {
-    return this.routesCourse.getRoutes(null);
+    return this.routesCourse.getAllRoutes();
   }
 
   @Post('/')

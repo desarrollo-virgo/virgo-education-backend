@@ -20,4 +20,8 @@ export class RouteServices implements RouteServicesInterface {
   getRoutes() {
     return this.routeModule.find({});
   }
+
+  getAllRoutes() {
+    return this.routeModule.find({});
+  }
 }

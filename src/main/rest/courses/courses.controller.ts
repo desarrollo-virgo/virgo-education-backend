@@ -33,7 +33,11 @@ export class CoursesController {
 
   @Put('/:idCourse')
   updateCourse(@Body() data: any, @Param('idCourse') id: string) {
-    return this.courses.updateCourse(id, data);
+    try {
+      return this.courses.updateCourse(id, data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get('/inprogress')
