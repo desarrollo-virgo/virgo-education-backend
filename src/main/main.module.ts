@@ -21,8 +21,10 @@ import { Users } from 'src/context/user/application/users';
 import { WebhooksController } from './rest/webhooks/webhooks.controller';
 import { ApplicationWH } from 'src/context/webhoohs/application/application';
 import { WebhooksServices } from './services/webhooks.service';
-import { UseCaseCourses } from 'src/context/courses/domain/courses/useCases/courses';
 import { GoogleSheetClient } from './external/googleSheet/googleSheetClient';
+import { VideosServices } from './services/videos.services';
+import { VideosController } from './rest/videos/videos.controller';
+import { Videos } from 'src/context/videos/application/videos';
 
 @Module({
   imports: [
@@ -39,26 +41,29 @@ import { GoogleSheetClient } from './external/googleSheet/googleSheetClient';
     CategoryController,
     UserController,
     WebhooksController,
+    VideosController,
   ],
   providers: [
     Courses,
     Directive,
     Categories,
     Users,
+    Videos,
     RoutesCourses,
     CoursesServices,
     CategoryServices,
     RouteServices,
     ApplicationWH,
     WebhooksServices,
-    UseCaseCourses,
     GoogleSheetClient,
+    VideosServices,
     { provide: 'courseServices', useClass: CoursesServices },
     { provide: 'directiveServices', useClass: DirectiveServices },
     { provide: 'routeServices', useClass: RouteServices },
     { provide: 'categoryServices', useClass: CategoryServices },
     { provide: 'userServices', useClass: UserServices },
     { provide: 'webhooksServices', useClass: WebhooksServices },
+    { provide: 'videoServices', useClass: VideosServices },
   ],
   exports: [CoursesServices],
 })

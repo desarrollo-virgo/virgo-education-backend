@@ -3,13 +3,11 @@ import {
   courseServicesInterface,
   InprogressCoursesInterfaces,
 } from '../domain/courses/interfaces/courses.interface';
-import { UseCaseCourses } from '../domain/courses/useCases/courses';
 
 @Injectable()
 export class Courses {
   constructor(
     @Inject('courseServices') private services: courseServicesInterface,
-    private useCaseCourses: UseCaseCourses,
   ) {}
 
   InprogressCourses(data: InprogressCoursesInterfaces) {
@@ -30,7 +28,7 @@ export class Courses {
 
   async videosFromCourse(id) {
     const videos = await this.services.videosFromCourse(id);
-    const buildPayload = this.useCaseCourses.buildPayloadVideos(videos);
+    const buildPayload = this.buildPayloadVideos(videos);
     return this.createResponse(buildPayload);
   }
 
@@ -51,14 +49,14 @@ export class Courses {
     // coursesData.category.forEach((category) => {
     //   category.id = category._id.toString();
     // });
-    const buildPayload = this.useCaseCourses.buildPayloadVideos(coursesData);
+    const buildPayload = this.buildPayloadVideos(coursesData);
     coursesData.videos = buildPayload;
     return this.createResponse(coursesData);
   }
 
   async getAllCourses() {
     const coursesData = await this.services.getAllCourses();
-    const buildPayload = this.useCaseCourses.buildPayload(coursesData);
+    const buildPayload = this.buildPayload(coursesData);
     return this.createResponse(buildPayload);
   }
 
@@ -120,5 +118,49 @@ export class Courses {
       payload: data,
     };
     return response;
+  }
+
+  buildPayload(data: any[]) {
+    const courses = data.map((course) => {
+      const courseInfo = {
+        id: course._id,
+        name: course.name,
+        description: course.description,
+        tags: course.tags,
+        score: course.score,
+        guid: course.guid,
+        category: course.category,
+        route: course.route,
+      };
+      return courseInfo;
+    });
+    return courses;
+  }
+
+  buildPayloadVideos(data) {
+    const videosInfo = data.videos.map((video) => {
+      return {
+        id: video.id,
+        name: video.name,
+        duration: video.duration,
+        description: video.description || 'sin descripcion',
+        thumbnail: this.createThumbnail(video),
+        guid: video.guid,
+        position: video.num,
+        urlEmbed: this.createUrlVideoEmbed(video),
+      };
+    });
+    return videosInfo;
+  }
+
+  createThumbnail(video) {
+    const url = 'https://vz-49107a3c-cdb.b-cdn.net';
+    return `${url}/${video.guid}/${video.thumbnail}`;
+  }
+
+  createUrlVideoEmbed(video) {
+    const streamManagerID = 80619;
+    const url = 'https://iframe.mediadelivery.net/embed';
+    return `${url}/${streamManagerID}/${video.guid}`;
   }
 }
