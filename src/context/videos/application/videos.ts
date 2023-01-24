@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { VideosServices } from 'src/main/services/videos.services';
+import { VideoServiceInterface } from './videosServiceIterface';
 @Injectable()
 export class Videos {
-  constructor(@Inject('videoServices') private services: VideosServices) {}
+  constructor(
+    @Inject('videoServices') private services: VideoServiceInterface,
+  ) {}
 
   async updateVideo(id, data) {
     let dataToUpdate = {};
@@ -19,6 +21,10 @@ export class Videos {
     }
     await this.services.updateVideo(id, dataToUpdate);
     return this.createResponse();
+  }
+
+  async averageScore(idVideo, idUser, score) {
+    await this.services.averageScore(idVideo, idUser, score);
   }
 
   createResponse(data: any = {}) {

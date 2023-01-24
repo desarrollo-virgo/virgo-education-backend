@@ -27,6 +27,21 @@ export class Video {
   @Prop()
   guid: string;
 
+  @Prop({
+    default: {
+      averageScore: 0,
+      numScore: 0,
+    },
+    type: {
+      averageScore: Number,
+      numScore: Number,
+    },
+  })
+  score: {
+    averageScore: number;
+    numScore: number;
+  };
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Course' })
   course: mongoose.Schema.Types.ObjectId;
 }

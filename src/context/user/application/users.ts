@@ -23,7 +23,8 @@ export class Users {
       directive: user.directive,
       perfil: user.profile,
       inprogress: user.inProgress,
-      finisehd: user.finished,
+      finished: user.finished,
+      scored: user.scored,
     };
     return this.createResponse(userData);
   }

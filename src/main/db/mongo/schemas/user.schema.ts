@@ -49,6 +49,12 @@ export class User {
     ref: 'finished',
   })
   finished: any[];
+
+  @Prop({
+    type: [{ video: mongoose.Schema.Types.ObjectId, scored: Number }],
+    ref: 'Video',
+  })
+  scored: any[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
