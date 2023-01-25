@@ -1,3 +1,4 @@
+import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { courseServicesInterface } from 'src/context/courses/domain/courses/interfaces/courses.interface';
@@ -12,6 +13,9 @@ import {
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
 
 export class CoursesServices implements courseServicesInterface {
+  azureConnection =
+    'DefaultEndpointsProtocol=https;AccountName=virgostore;AccountKey=Hi3flZFsAiHMLkS4V/x/ZDP9cS3R7hgI4+6L5BVL25Ezf8AiKlzsxLRJpD2kwJYXcmtnhbwBDS1E+ASt6HKGfw==;EndpointSuffix=core.windows.net';
+  containerName = 'images';
   constructor(
     @InjectModel(Course.name) private courseModel: Model<CoursesDocument>,
     @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
@@ -96,5 +100,26 @@ export class CoursesServices implements courseServicesInterface {
 
   async updateCourse(id, data) {
     return await this.courseModel.findByIdAndUpdate(id, { ...data });
+  }
+
+  getBlobClient(imageName: string): BlockBlobClient {
+    const blobClientService = BlobServiceClient.fromConnectionString(
+      this.azureConnection,
+    );
+    const containerClient = blobClientService.getContainerClient(
+      this.containerName,
+    );
+    const blobClient = containerClient.getBlockBlobClient(imageName);
+    return blobClient;
+  }
+
+  async uploadCover(file: Express.Multer.File, course) {
+    const fileParts = file.originalname.split('.');
+    const extension = fileParts[fileParts.length - 1];
+    const fileName = `${course}-cover.${extension}`;
+    const blobClient = this.getBlobClient(fileName);
+    const url = `https://virgostore.blob.core.windows.net/images/${fileName}`;
+    await this.updateCourse(course, { cover: url });
+    return await blobClient.uploadData(file.buffer);
   }
 }

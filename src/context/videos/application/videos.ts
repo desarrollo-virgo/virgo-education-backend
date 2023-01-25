@@ -25,6 +25,7 @@ export class Videos {
 
   async averageScore(idVideo, idUser, score) {
     await this.services.averageScore(idVideo, idUser, score);
+    return this.createResponse();
   }
 
   createResponse(data: any = {}) {

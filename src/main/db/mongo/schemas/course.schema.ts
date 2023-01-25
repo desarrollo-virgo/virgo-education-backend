@@ -26,6 +26,9 @@ export class Course {
   @Prop({ default: false })
   public: boolean;
 
+  @Prop()
+  cover: string;
+
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Category' })
   category: Category[];
 

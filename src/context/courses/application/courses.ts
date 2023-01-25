@@ -163,4 +163,9 @@ export class Courses {
     const url = 'https://iframe.mediadelivery.net/embed';
     return `${url}/${streamManagerID}/${video.guid}`;
   }
+
+  async uploadCover(file: Express.Multer.File, course: string) {
+    await this.services.uploadCover(file, course);
+    return this.createResponse({});
+  }
 }

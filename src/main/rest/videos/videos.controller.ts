@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Headers,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -21,10 +23,14 @@ export class VideosController {
   }
 
   @Post('/:idVideo/score')
-  addScore(@Param() data: any, @Body() body, @Headers() headers) {
+  async addScore(@Param() data: any, @Body() body, @Headers() headers) {
     const { idVideo } = data;
     const { userid } = headers;
     const { score } = body;
-    return this.videos.averageScore(idVideo, userid, score);
+    try {
+      return await this.videos.averageScore(idVideo, userid, score);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

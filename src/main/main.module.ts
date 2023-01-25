@@ -1,6 +1,8 @@
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AzureStorageModule } from '@nestjs/azure-storage';
+
 import { Courses } from 'src/context/courses/application/courses';
 import { MongoModule } from './db/mongo/mongo.module';
 import { CoursesController } from './rest/courses/courses.controller';
@@ -32,6 +34,11 @@ import { Videos } from 'src/context/videos/application/videos';
     MongoModule,
     ConfigModule.forRoot({
       load: [config],
+    }),
+    AzureStorageModule.withConfig({
+      sasKey: process.env['AZURE_STORAGE_SAS_KEY'],
+      accountName: process.env['AZURE_STORAGE_ACCOUNT'],
+      containerName: 'virgostore',
     }),
   ],
   controllers: [

@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Courses } from 'src/context/courses/application/courses';
 import {
   CategoryForCoursesDTO,
@@ -78,5 +89,14 @@ export class CoursesController {
   addVideo(@Body() data, @Param() courseData) {
     const { idCourse } = courseData;
     return this.courses.addVideo(data, idCourse);
+  }
+  @Post('/:idCourse/uploadCover')
+  @UseInterceptors(FileInterceptor('cover'))
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Param() data: any,
+  ): Promise<any> {
+    const { idCourse } = data;
+    return await this.courses.uploadCover(file, idCourse);
   }
 }
