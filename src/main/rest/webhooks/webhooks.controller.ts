@@ -10,6 +10,6 @@ export class WebhooksController {
     if (data.Status !== 3) {
       return true;
     }
-    return this.application.saveVideo(data);
+    // return this.application.saveVideo(data);
   }
 }

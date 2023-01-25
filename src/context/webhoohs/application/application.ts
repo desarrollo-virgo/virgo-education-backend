@@ -8,47 +8,47 @@ export class ApplicationWH {
     private readonly serviceCourses: CoursesServices,
     private readonly serviceWh: WebhooksServices,
   ) {}
-  async saveVideo(info: any) {
-    const getInfo = await this.serviceWh.getInfoVideos(info);
-    const {
-      collectionId,
-      videoLibraryId,
-      length,
-      thumbnailFileName,
-      guid: videoid,
-      title,
-    } = getInfo;
+  // async saveVideo(info: any) {
+  //   const getInfo = await this.serviceWh.getInfoVideos(info);
+  //   const {
+  //     collectionId,
+  //     videoLibraryId,
+  //     length,
+  //     thumbnailFileName,
+  //     guid: videoid,
+  //     title,
+  //   } = getInfo;
 
-    const fileName = title.split('.');
-    const titleVideo = fileName[1];
-    const num = fileName[0];
-    const collectionsInfo = await this.serviceWh.getInfoCollection(
-      collectionId,
-      videoLibraryId,
-    );
-    const { name, guid: courseid } = collectionsInfo;
+  //   const fileName = title.split('.');
+  //   const titleVideo = fileName[1];
+  //   const num = fileName[0];
+  //   const collectionsInfo = await this.serviceWh.getInfoCollection(
+  //     collectionId,
+  //     videoLibraryId,
+  //   );
+  //   const { name, guid: courseid } = collectionsInfo;
 
-    const courseData = {
-      name: name,
-      description: name,
-      score: 0,
-      guid: courseid,
-    };
+  //   const courseData = {
+  //     name: name,
+  //     description: name,
+  //     score: 0,
+  //     guid: courseid,
+  //   };
 
-    let course = await this.serviceCourses.getCoursesForName(name);
-    if (!course) {
-      course = await this.serviceCourses.addCourse(courseData);
-    }
-    const videoData = {
-      name: titleVideo,
-      duration: length,
-      thumbnail: thumbnailFileName,
-      guid: videoid,
-      num,
-      course: course._id,
-    };
+  //   let course = await this.serviceCourses.getCoursesForName(name);
+  //   if (!course) {
+  //     course = await this.serviceCourses.addCourse(courseData);
+  //   }
+  //   const videoData = {
+  //     name: titleVideo,
+  //     duration: length,
+  //     thumbnail: thumbnailFileName,
+  //     guid: videoid,
+  //     num,
+  //     course: course._id,
+  //   };
 
-    const video = await this.serviceCourses.addVideo(videoData);
-    await this.serviceCourses.addVideosToCourse(video.id, course.id);
-  }
+  //   const video = await this.serviceCourses.addVideo(videoData);
+  //   await this.serviceCourses.addVideosToCourse(video.id, course.id);
+  // }
 }

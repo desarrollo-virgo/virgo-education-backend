@@ -40,8 +40,13 @@ export class Courses {
     return this.services.addCategory(data);
   }
 
-  addCourse(data) {
-    return this.services.addCourse(data);
+  async addCourse(data) {
+    const result = JSON.stringify(await this.services.addCourse(data));
+    const resultJSON = JSON.parse(result);
+    resultJSON['id'] = resultJSON['_id'];
+    delete resultJSON['_id'];
+    delete resultJSON['__v'];
+    return this.createResponse(resultJSON);
   }
 
   async getCourses(id) {

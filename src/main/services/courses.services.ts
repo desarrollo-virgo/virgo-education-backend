@@ -22,8 +22,8 @@ export class CoursesServices implements courseServicesInterface {
     @InjectModel(RouteCourses.name)
     private routeModel: Model<RouteCoursesDocument>,
   ) {}
-  addCourse(data) {
-    return this.courseModel.create(data);
+  async addCourse(data) {
+    return await this.courseModel.create(data);
   }
 
   async getCourses(id) {
