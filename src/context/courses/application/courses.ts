@@ -147,6 +147,7 @@ export class Courses {
         thumbnail: this.createThumbnail(video),
         guid: video.guid,
         position: video.num,
+        score: video.score,
         urlEmbed: this.createUrlVideoEmbed(video),
       };
     });

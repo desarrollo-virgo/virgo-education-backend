@@ -35,6 +35,7 @@ export class VideosServices implements VideoServiceInterface {
     }
     dataUser.scored.push({ video: idVideo, scored: scoreVideo });
     dataUser.save();
-    return await dataVideo.save();
+    await dataVideo.save();
+    return { average: newAverage };
   }
 }
