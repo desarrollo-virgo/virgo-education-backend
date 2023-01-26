@@ -99,4 +99,14 @@ export class CoursesController {
     const { idCourse } = data;
     return await this.courses.uploadCover(file, idCourse);
   }
+
+  @Post('/:idCourse/uploadVideo')
+  @UseInterceptors(FileInterceptor('video'))
+  async uploadVideo(
+    @UploadedFile() file: Express.Multer.File,
+    @Param() data: any,
+  ): Promise<any> {
+    const { idCourse } = data;
+    return await this.courses.uploadVideo(file, idCourse);
+  }
 }

@@ -174,4 +174,16 @@ export class Courses {
     await this.services.uploadCover(file, course);
     return this.createResponse({});
   }
+
+  async uploadVideo(file: Express.Multer.File, course: string) {
+    const result = await this.services.uploadVideo(file, course);
+    const payload = {
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      url: result.url,
+      position: result.num,
+    };
+    return this.createResponse(payload);
+  }
 }

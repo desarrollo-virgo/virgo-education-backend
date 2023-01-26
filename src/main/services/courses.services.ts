@@ -1,6 +1,7 @@
 import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { uuid } from 'uuidv4';
 import { courseServicesInterface } from 'src/context/courses/domain/courses/interfaces/courses.interface';
 import {
   Course,
@@ -81,9 +82,9 @@ export class CoursesServices implements courseServicesInterface {
   }
 
   async addVideosToCourse(idVideo, idCourse) {
-    const course = await this.getCourses(idCourse);
+    const course = await this.courseModel.findById(idCourse);
     course.videos = course.videos.concat(idVideo);
-    return await this.courseModel.findByIdAndUpdate(idCourse, course);
+    return await course.save();
   }
 
   async addCategoryToCourse(idCourse, idCategory) {
@@ -102,24 +103,57 @@ export class CoursesServices implements courseServicesInterface {
     return await this.courseModel.findByIdAndUpdate(id, { ...data });
   }
 
-  getBlobClient(imageName: string): BlockBlobClient {
+  getBlobClient(imageName: string, containerName: string): BlockBlobClient {
     const blobClientService = BlobServiceClient.fromConnectionString(
       this.azureConnection,
     );
-    const containerClient = blobClientService.getContainerClient(
-      this.containerName,
-    );
+    const containerClient = blobClientService.getContainerClient(containerName);
     const blobClient = containerClient.getBlockBlobClient(imageName);
     return blobClient;
   }
 
   async uploadCover(file: Express.Multer.File, course) {
+    const containerName = 'images';
     const fileParts = file.originalname.split('.');
     const extension = fileParts[fileParts.length - 1];
     const fileName = `${course}-cover.${extension}`;
-    const blobClient = this.getBlobClient(fileName);
+    const blobClient = this.getBlobClient(fileName, containerName);
     const url = `https://virgostore.blob.core.windows.net/images/${fileName}`;
     await this.updateCourse(course, { cover: url });
     return await blobClient.uploadData(file.buffer);
+  }
+
+  async uploadVideo(file: Express.Multer.File, course) {
+    const containerName = 'videos';
+    const fileParts = file.originalname.split('.');
+    const extension = fileParts[fileParts.length - 1];
+    const fileName = `${course}-${uuid()}`;
+    const blobClient = this.getBlobClient(
+      `${fileName}.${extension}`,
+      containerName,
+    );
+    const url = `https://virgostore.blob.core.windows.net/${containerName}/${fileName}.${extension}`;
+    const { num, name } = this.infoToVideo(fileParts);
+    const dataVideo = {
+      name,
+      description: 'sin descripcion',
+      num,
+      url,
+    };
+    await blobClient.uploadData(file.buffer);
+    const resultVideoDB = await this.addVideo(dataVideo);
+    const _id = resultVideoDB.id;
+    await this.addVideosToCourse(_id, course);
+    return resultVideoDB;
+  }
+
+  infoToVideo(fileParts) {
+    const nameParts = fileParts[0].split('-');
+    const name = nameParts[1] || 'sin nombre';
+    const num = nameParts[0] || 0;
+    return {
+      num,
+      name,
+    };
   }
 }

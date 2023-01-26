@@ -17,4 +17,5 @@ export interface courseServicesInterface {
   videosFromCourse: (idCourse) => Promise<any>;
   updateCourse: (id, data) => Promise<any>;
   uploadCover: (file, video) => Promise<any>;
+  uploadVideo: (file, video) => Promise<any>;
 }
