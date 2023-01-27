@@ -27,6 +27,10 @@ export class Categories {
     return this.services.addCategory(data);
   }
 
+  getCourseCategories(idcategory) {
+    return this.services.getCourseCategories(idcategory);
+  }
+
   createResponse(data: any) {
     const response = {
       status: 'ok',

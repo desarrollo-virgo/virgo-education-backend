@@ -21,4 +21,9 @@ export class CategoryController {
   getAllCategories() {
     return this.category.getAllCategories();
   }
+  @Get('/:idcategory/courses')
+  getCourseCategories(@Param() data) {
+    const { idcategory } = data;
+    return this.category.getCourseCategories(idcategory);
+  }
 }
