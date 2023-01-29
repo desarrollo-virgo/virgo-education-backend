@@ -17,12 +17,27 @@ export class RoutesCourses {
       return {
         id: result.id,
         name: result.name,
+        courses: this.getCourses(result.courses),
       };
     });
     return this.createResponse(routes);
   }
+
+  getCourses(courses) {
+    return courses.map(({ course }) => {
+      return {
+        id: course._id,
+        name: course.name,
+      };
+    });
+  }
   addRoute(data) {
     return this.services.addRoute(data);
+  }
+
+  async addCourseToRoute(idRoute, body) {
+    const results = await this.services.addCourseToRoute(idRoute, body);
+    return results;
   }
 
   createResponse(data: any) {

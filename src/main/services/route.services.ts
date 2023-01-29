@@ -22,6 +22,15 @@ export class RouteServices implements RouteServicesInterface {
   }
 
   getAllRoutes() {
-    return this.routeModule.find({});
+    return this.routeModule.find({}).populate({
+      path: 'courses.course',
+      model: 'Course',
+    });
+  }
+
+  async addCourseToRoute(idRoute, body) {
+    const route = await this.routeModule.findById(idRoute);
+    route.courses = body;
+    route.save();
   }
 }

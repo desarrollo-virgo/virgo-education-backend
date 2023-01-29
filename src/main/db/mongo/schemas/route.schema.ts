@@ -12,8 +12,16 @@ export class RouteCourses {
   @Prop()
   description: string;
 
-  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Course' })
-  courses: Course[];
+  @Prop({
+    type: [
+      {
+        course: mongoose.Schema.Types.ObjectId,
+        position: Number,
+      },
+    ],
+    ref: 'Course',
+  })
+  courses: any[];
 }
 
 export const RouteCoursesSchema = SchemaFactory.createForClass(RouteCourses);

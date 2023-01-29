@@ -20,4 +20,10 @@ export class RoutesController {
   addRoutes(@Body() data) {
     return this.routesCourse.addRoute(data);
   }
+
+  @Post('/:idRoute')
+  addCourseToRoute(@Param() params, @Body() body) {
+    const { idRoute } = params;
+    return this.routesCourse.addCourseToRoute(idRoute, body);
+  }
 }
