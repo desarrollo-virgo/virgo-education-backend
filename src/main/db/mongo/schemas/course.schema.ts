@@ -37,6 +37,9 @@ export class Course {
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Video' })
   videos: Video[];
+
+  @Prop()
+  expert: string;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

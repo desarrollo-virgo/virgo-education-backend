@@ -7,4 +7,6 @@ export interface UserServicesInterface {
   getFinishedCourses: (user) => any;
   updateTimeProgress: (user, data) => any;
   readSheet: () => any;
+  addWishList: (idUser, idCourse) => any;
+  removeWishList: (idUser, idCourse) => any;
 }

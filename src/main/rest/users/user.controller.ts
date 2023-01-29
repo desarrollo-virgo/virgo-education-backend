@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -66,5 +67,19 @@ export class UserController {
   getFinishedCourse(@Param() param) {
     const { idUser } = param;
     return this.user.getFinishedCourses(idUser);
+  }
+
+  @Post('/:idUser/course/wishlist')
+  addWishList(@Body() BodyData, @Param() param) {
+    const { idUser } = param;
+    const { idCourse } = BodyData;
+    return this.user.addWishList(idUser, idCourse);
+  }
+
+  @Delete('/:idUser/course/wishlist')
+  removeWishList(@Body() BodyData, @Param() param) {
+    const { idUser } = param;
+    const { idCourse } = BodyData;
+    return this.user.removeWishList(idUser, idCourse);
   }
 }

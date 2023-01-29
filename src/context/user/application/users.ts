@@ -60,6 +60,16 @@ export class Users {
     return this.createResponse({});
   }
 
+  async addWishList(idUser, idCourse) {
+    await this.services.addWishList(idUser, idCourse);
+    return this.createResponse({});
+  }
+
+  async removeWishList(idUser, idCourse) {
+    await this.services.removeWishList(idUser, idCourse);
+    return this.createResponse({});
+  }
+
   createResponse(data) {
     return {
       status: 'ok',

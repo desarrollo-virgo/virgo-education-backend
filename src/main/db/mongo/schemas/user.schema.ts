@@ -21,11 +21,7 @@ export class User {
 
   @Prop({ type: String, ref: 'Directives' })
   directive: string;
-  // @Prop({
-  //   type: [mongoose.Schema.Types.ObjectId],
-  //   ref: 'Profile',
-  //   unique: true,
-  // })
+
   @Prop()
   profile: string;
 
@@ -49,6 +45,12 @@ export class User {
     ref: 'finished',
   })
   finished: any[];
+
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'wishList',
+  })
+  wishList: any[];
 
   @Prop({
     type: [{ video: mongoose.Schema.Types.ObjectId, scored: Number }],

@@ -176,6 +176,25 @@ export class UserServices implements UserServicesInterface {
     return result;
   }
 
+  async addWishList(idUser, idCourse) {
+    const result = await this.userModule.findById(idUser);
+    result.wishList.push(idCourse);
+    return await result.save();
+  }
+
+  async removeWishList(idUser, idCourse) {
+    const result = await this.userModule.findById(idUser);
+    result.wishList.push(idCourse);
+    const newList = result.wishList.filter((list) => {
+      return list != idCourse;
+    });
+    if (newList.length === 0) {
+      result.wishList = undefined;
+    } else {
+      result.wishList = newList;
+    }
+    return await result.save();
+  }
   async saveUser(user) {
     return await this.userModule.create(user);
   }
