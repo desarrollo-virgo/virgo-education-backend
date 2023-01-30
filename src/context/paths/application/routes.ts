@@ -24,10 +24,11 @@ export class RoutesCourses {
   }
 
   getCourses(courses) {
-    return courses.map(({ course }) => {
+    return courses.map(({ course, position }) => {
       return {
         id: course._id,
         name: course.name,
+        position: position,
       };
     });
   }
