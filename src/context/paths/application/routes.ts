@@ -29,6 +29,9 @@ export class RoutesCourses {
         id: course._id,
         name: course.name,
         position: position,
+        cover: course.cover,
+        description: course.description,
+        tags: course.tags,
       };
     });
   }
