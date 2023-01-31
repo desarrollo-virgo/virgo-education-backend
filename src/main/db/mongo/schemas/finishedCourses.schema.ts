@@ -4,7 +4,7 @@ import { Course } from './course.schema';
 
 export type CategoryDocument = HydratedDocument<FinishedCourses>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class FinishedCourses {
   @Prop()
   course: Course;

@@ -4,7 +4,7 @@ import { Course } from './course.schema';
 
 export type RouteCoursesDocument = HydratedDocument<RouteCourses>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class RouteCourses {
   @Prop()
   name: string;

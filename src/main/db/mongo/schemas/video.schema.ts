@@ -4,7 +4,7 @@ import { Course } from './course.schema';
 
 export type VideoDocument = HydratedDocument<Video>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Video {
   @Prop()
   name: string;

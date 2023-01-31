@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type DirectivesDocument = HydratedDocument<Directives>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Directives {
   @Prop()
   name: string;
