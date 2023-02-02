@@ -116,7 +116,7 @@ export class CoursesServices implements courseServicesInterface {
     const fileParts = file.originalname.split('.');
     const extension = fileParts[fileParts.length - 1];
     const fileName = `${course}-cover.${extension}`;
-    const blobClient = this.getBlobClient(fileName, containerName);
+    const blobClient = await this.getBlobClient(fileName, containerName);
     const url = `https://virgostore.blob.core.windows.net/images/${fileName}`;
     await this.updateCourse(course, { cover: url });
     return await blobClient.uploadData(file.buffer);
@@ -131,6 +131,7 @@ export class CoursesServices implements courseServicesInterface {
       `${fileName}.${extension}`,
       containerName,
     );
+    console.log('blob.....');
     const url = `https://virgostore.blob.core.windows.net/${containerName}/${fileName}.${extension}`;
     const { num, name } = this.infoToVideo(fileParts);
     const dataVideo = {
@@ -139,13 +140,17 @@ export class CoursesServices implements courseServicesInterface {
       num,
       url,
     };
+    console.log('subiendo archivo...')
     blobClient.uploadData(file.buffer).then(() => {
-      console.log('video listo ......');
+      console.log('video listo ......url: ', url);
     });
-
+    console.log('guardando archivo');
     const resultVideoDB = await this.addVideo(dataVideo);
+    console.log('video guardado');
     const _id = resultVideoDB.id;
+    console.log('antes de agregar ...');
     await this.addVideosToCourse(_id, course);
+    console.log('video agregado...');
     return resultVideoDB;
   }
 
