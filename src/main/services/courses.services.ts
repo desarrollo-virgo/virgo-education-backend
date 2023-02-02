@@ -80,7 +80,6 @@ export class CoursesServices implements courseServicesInterface {
   addVideo(data) {
     return this.videoModel.create(data);
   }
-
   async addVideosToCourse(idVideo, idCourse) {
     const course = await this.courseModel.findById(idCourse);
     course.videos = course.videos.concat(idVideo);
