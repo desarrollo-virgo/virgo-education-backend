@@ -140,7 +140,7 @@ export class CoursesServices implements courseServicesInterface {
       num,
       url,
     };
-    await blobClient.uploadData(file.buffer);
+    blobClient.uploadData(file.buffer);
     const resultVideoDB = await this.addVideo(dataVideo);
     const _id = resultVideoDB.id;
     await this.addVideosToCourse(_id, course);
