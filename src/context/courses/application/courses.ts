@@ -149,11 +149,11 @@ export class Courses {
         name: video.name,
         duration: video.duration,
         description: video.description || 'sin descripcion',
-        thumbnail: this.createThumbnail(video),
+        thumbnail: '',
         guid: video.guid,
         position: video.num,
         score: video.score,
-        urlEmbed: this.createUrlVideoEmbed(video),
+        urlEmbed: video.url,
       };
     });
     return videosInfo;
