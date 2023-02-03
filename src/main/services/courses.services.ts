@@ -140,7 +140,7 @@ export class CoursesServices implements courseServicesInterface {
       num,
       url,
     };
-    console.log('subiendo archivo...')
+    console.log('subiendo archivo...');
     blobClient.uploadData(file.buffer).then(() => {
       console.log('video listo ......url: ', url);
     });

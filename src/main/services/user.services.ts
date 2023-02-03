@@ -97,9 +97,7 @@ export class UserServices implements UserServicesInterface {
   async saveFinishedVideo(idCourse, num, user, data) {
     const date = new Date();
     const course = await this.courseModule
-      .findOne({
-        id: idCourse,
-      })
+      .findById(idCourse)
       .populate({ path: 'videos', match: { num: num + 1 } });
 
     if (course.videos.length > 0) {
@@ -110,7 +108,11 @@ export class UserServices implements UserServicesInterface {
         date,
         num: course.videos[0].num,
       };
-      user.inProgress.push(dataProgress);
+      const indVideo = user.inProgress.findIndex((inp) => {
+        return inp.course.id == idCourse;
+      });
+      user.inProgress[indVideo] = dataProgress;
+      // user.inProgress.push(dataProgress);
     } else {
       user.inProgress = undefined;
       await this.addFinishedCourse(user.id, data);
