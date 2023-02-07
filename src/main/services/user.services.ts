@@ -209,6 +209,8 @@ export class UserServices implements UserServicesInterface {
   async printPDF(data) {
     let certificate_template = certificate.replace('[%COURSE%]',data.courseName.toUpperCase())
     certificate_template     = certificate_template.replace('[%NAME%]',data.userName.toUpperCase())
+    certificate_template     = certificate_template.replace('[%PROFESSOR%]',data.userName.toUpperCase())
+    certificate_template     = certificate_template.replace('[%DATE%]',data.courseDate.split("T")[0])
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     // page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36 WAIT_UNTIL=load")
