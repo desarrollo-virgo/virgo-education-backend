@@ -70,6 +70,10 @@ export class Users {
     return this.createResponse({});
   }
 
+  async generateCertificate(data){
+    const res = await this.services.generateCertificate(data)
+    return res
+  }
   createResponse(data) {
     return {
       status: 'ok',

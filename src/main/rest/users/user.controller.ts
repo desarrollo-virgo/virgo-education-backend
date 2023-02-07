@@ -82,4 +82,9 @@ export class UserController {
     const { idCourse } = BodyData;
     return this.user.removeWishList(idUser, idCourse);
   }
+
+  @Post('courseCertificate')
+  generateCertificate(@Body() data){
+    return this.user.generateCertificate(data)
+  }
 }

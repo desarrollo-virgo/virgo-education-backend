@@ -5,6 +5,8 @@ import { Course, CoursesDocument } from '../db/mongo/schemas/course.schema';
 import { User, UserDocument } from '../db/mongo/schemas/user.schema';
 import { Video } from '../db/mongo/schemas/video.schema';
 import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
+import certificate from './certificate';
+const  html_to_pdf = require('html-pdf-node');
 
 export class UserServices implements UserServicesInterface {
   constructor(
@@ -199,5 +201,16 @@ export class UserServices implements UserServicesInterface {
   }
   async saveUser(user) {
     return await this.userModule.create(user);
+  }
+
+  async generateCertificate(data){
+
+    let certificate_template = certificate.replace('[%COURSE%]',data.courseName.toUpperCase())
+    certificate_template     = certificate_template.replace('[%NAME%]',data.userName.toUpperCase())
+    let options = { format: 'A4' };
+    let file = { content: certificate_template};
+    const buffer = await html_to_pdf.generatePdf(file, options)
+    return buffer.toString('base64')
+    
   }
 }
