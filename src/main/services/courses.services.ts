@@ -12,7 +12,7 @@ import {
   RouteCoursesDocument,
 } from '../db/mongo/schemas/route.schema';
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
-
+import { getVideoDurationInSeconds } from 'get-video-duration';
 export class CoursesServices implements courseServicesInterface {
   azureConnection =
     'DefaultEndpointsProtocol=https;AccountName=virgostore;AccountKey=Hi3flZFsAiHMLkS4V/x/ZDP9cS3R7hgI4+6L5BVL25Ezf8AiKlzsxLRJpD2kwJYXcmtnhbwBDS1E+ASt6HKGfw==;EndpointSuffix=core.windows.net';
@@ -141,8 +141,10 @@ export class CoursesServices implements courseServicesInterface {
       url,
     };
     console.log('subiendo archivo...');
-    blobClient.uploadData(file.buffer).then(() => {
+    blobClient.uploadData(file.buffer).then(async () => {
       console.log('video listo ......url: ', url);
+      const duration = await getVideoDurationInSeconds(url);
+      this.updateVideoAdditionalAttr(url, duration);
     });
     console.log('guardando archivo');
     const resultVideoDB = await this.addVideo(dataVideo);
@@ -154,6 +156,11 @@ export class CoursesServices implements courseServicesInterface {
     return resultVideoDB;
   }
 
+  async updateVideoAdditionalAttr(url, duration) {
+    const video = await this.videoModel.findOne({ url: url });
+    video.duration = duration;
+    video.save();
+  }
   infoToVideo(fileParts) {
     const nameParts = fileParts[0].split('-');
     const name = nameParts[1] || 'sin nombre';
