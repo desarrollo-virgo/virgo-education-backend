@@ -9,4 +9,5 @@ export interface UserServicesInterface {
   readSheet: () => any;
   addWishList: (idUser, idCourse) => any;
   removeWishList: (idUser, idCourse) => any;
+  generateCertificate: (body) => any;
 }
