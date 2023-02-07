@@ -7,6 +7,7 @@ import { Video } from '../db/mongo/schemas/video.schema';
 import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
 import certificate from './certificate';
 const  html_to_pdf = require('html-pdf-node');
+const puppeteer = require('puppeteer')
 
 export class UserServices implements UserServicesInterface {
   constructor(
@@ -203,14 +204,35 @@ export class UserServices implements UserServicesInterface {
     return await this.userModule.create(user);
   }
 
-  async generateCertificate(data){
+  
 
+  async printPDF(data) {
     let certificate_template = certificate.replace('[%COURSE%]',data.courseName.toUpperCase())
     certificate_template     = certificate_template.replace('[%NAME%]',data.userName.toUpperCase())
-    let options = { format: 'A4' };
-    let file = { content: certificate_template};
-    const buffer = await html_to_pdf.generatePdf(file, options)
-    return buffer.toString('base64')
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    // page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36 WAIT_UNTIL=load")
+    await page.setContent(certificate_template, {
+      waitUntil: 'networkidle0'
+    })
+    // await page.goto('https://blog.risingstack.com', {waitUntil: 'networkidle0'});
+    const pdf = await page.pdf({ format: 'A0',landscape: true });
+    await browser.close();
+    return pdf
+  }
+
+  async generateCertificate(data){
+
+    // let certificate_template = certificate.replace('[%COURSE%]',data.courseName.toUpperCase())
+    // certificate_template     = certificate_template.replace('[%NAME%]',data.userName.toUpperCase())
+    // let options = { 
+    //   format: 'A4',
+    //  };
+    // let file = { content: certificate_template};
+    // const buffer = await html_to_pdf.generatePdf(file, options)
+    const b = await this.printPDF(data)
+    // return buffer.toString('base64')
+    return b.toString('base64')
     
   }
 }
