@@ -25,6 +25,9 @@ export class RoutesCourses {
 
   getCourses(courses) {
     return courses.map(({ course, position }) => {
+      if (!course) {
+        return {};
+      }
       return {
         id: course._id,
         name: course.name,
