@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { UserServicesInterface } from 'src/context/courses/domain/courses/interfaces/user.interface';
 import { Course, CoursesDocument } from '../db/mongo/schemas/course.schema';
 import { User, UserDocument } from '../db/mongo/schemas/user.schema';
-import { Video } from '../db/mongo/schemas/video.schema';
+import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
 import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
 import certificate from './certificate';
 const  html_to_pdf = require('html-pdf-node');
@@ -15,6 +15,8 @@ export class UserServices implements UserServicesInterface {
     private userModule: Model<UserDocument>,
     @InjectModel(Course.name)
     private courseModule: Model<CoursesDocument>,
+    @InjectModel(Video.name)
+    private videoModule: Model<VideoDocument>,
     private sheetServiceClient: GoogleSheetClient,
   ) {}
   async getAllUser() {
@@ -204,37 +206,76 @@ export class UserServices implements UserServicesInterface {
     return await this.userModule.create(user);
   }
 
-  
+  async generateCertificate(data){
 
-  async printPDF(data) {
     let certificate_template = certificate.replace('[%COURSE%]',data.courseName.toUpperCase())
     certificate_template     = certificate_template.replace('[%NAME%]',data.userName.toUpperCase())
     certificate_template     = certificate_template.replace('[%PROFESSOR%]',data.userName.toUpperCase())
     certificate_template     = certificate_template.replace('[%DATE%]',data.courseDate.split("T")[0])
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    // page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36 WAIT_UNTIL=load")
     await page.setContent(certificate_template, {
       waitUntil: 'networkidle0'
     })
-    // await page.goto('https://blog.risingstack.com', {waitUntil: 'networkidle0'});
     const pdf = await page.pdf({ format: 'A0',landscape: true });
     await browser.close();
-    return pdf
-  }
-
-  async generateCertificate(data){
-
-    // let certificate_template = certificate.replace('[%COURSE%]',data.courseName.toUpperCase())
-    // certificate_template     = certificate_template.replace('[%NAME%]',data.userName.toUpperCase())
-    // let options = { 
-    //   format: 'A4',
-    //  };
-    // let file = { content: certificate_template};
-    // const buffer = await html_to_pdf.generatePdf(file, options)
-    const b = await this.printPDF(data)
-    // return buffer.toString('base64')
-    return b.toString('base64')
+    return pdf.toString('base64')
     
   }
+
+  getRanking(stars) {
+    const ranking = {
+      'Bronze' : [0 , 5],
+      'Silver' : [6 , 10],
+      'Gold'   : [11, 9999999]
+    }
+
+    const ranks = Object.keys(ranking)
+    for (let i = 0; i < ranks.length; i++) {
+      const rank = ranking[ranks[i]];
+      if( stars >= rank[0]  && stars <= rank[1])return ranks[i]
+    }
+
+  }
+
+  async getProgressInfo(idUser){
+
+
+    
+    const userProgress = {
+      stars: 0,
+      studyHours:0,
+      completedRoutes:0,
+      rank:''
+    }
+
+    const userInfo = await this.userModule.findById(idUser)
+    const finishedCourses = userInfo['finished']
+    const coursesId = []
+    finishedCourses.map((value,index)=>{
+      coursesId.push(value['course'])
+    })
+
+    userProgress['stars'] = coursesId.length
+    userProgress['rank'] = this.getRanking(userProgress['stars'])
+
+    const coursesInfo = await this.courseModule.find({id:coursesId})
+    const videosId = []
+    const routesId = []
+    coursesInfo.map((value,index)=>{
+      coursesId.concat(value['videos'])
+      routesId.concat(value['route'])
+    })
+    userProgress['completedRoutes'] = [...new Set(routesId)].length
+
+    const videosInfo = await this.videoModule.find({id:videosId})
+    videosInfo.map((value,index)=>{
+      userProgress['studyHours'] += (value['duration'] || 0) / 3600
+    })
+
+
+
+    return userProgress
+  }
+
 }

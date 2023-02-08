@@ -74,6 +74,12 @@ export class Users {
     const res = await this.services.generateCertificate(data)
     return res
   }
+
+  async getProgressInfo(idUser){
+    const result = await this.services.getProgressInfo(idUser)
+    return result
+  }
+
   createResponse(data) {
     return {
       status: 'ok',

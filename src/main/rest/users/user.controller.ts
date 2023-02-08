@@ -87,4 +87,10 @@ export class UserController {
   generateCertificate(@Body() data){
     return this.user.generateCertificate(data)
   }
+
+  @Get('/:idUser/progressInfo')
+  getProgressInfo(@Param() param){
+    const { idUser } = param;
+    return this.user.getProgressInfo(idUser)
+  }
 }

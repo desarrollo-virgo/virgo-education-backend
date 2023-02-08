@@ -10,4 +10,5 @@ export interface UserServicesInterface {
   addWishList: (idUser, idCourse) => any;
   removeWishList: (idUser, idCourse) => any;
   generateCertificate: (body) => any;
+  getProgressInfo: (idUser) => any;
 }
