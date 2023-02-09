@@ -16,9 +16,6 @@ export class User {
   @Prop({ unique: true })
   email: string;
 
-  // @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Directives' })
-  // directive: Directives[];
-
   @Prop({ type: String, ref: 'Directives' })
   directive: string;
 

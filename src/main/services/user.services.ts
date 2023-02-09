@@ -4,9 +4,14 @@ import { UserServicesInterface } from 'src/context/courses/domain/courses/interf
 import { Course, CoursesDocument } from '../db/mongo/schemas/course.schema';
 import { User, UserDocument } from '../db/mongo/schemas/user.schema';
 import { Video } from '../db/mongo/schemas/video.schema';
+import {
+  VideoFinished,
+  VideoFinishedDocument,
+} from '../db/mongo/schemas/videosFinished.schema';
 import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
 import certificate from './certificate';
-const  html_to_pdf = require('html-pdf-node');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const html_to_pdf = require('html-pdf-node');
 
 export class UserServices implements UserServicesInterface {
   constructor(
@@ -14,6 +19,8 @@ export class UserServices implements UserServicesInterface {
     private userModule: Model<UserDocument>,
     @InjectModel(Course.name)
     private courseModule: Model<CoursesDocument>,
+    @InjectModel(VideoFinished.name)
+    private videoFinishedModule: Model<VideoFinishedDocument>,
     private sheetServiceClient: GoogleSheetClient,
   ) {}
   async getAllUser() {
@@ -75,7 +82,7 @@ export class UserServices implements UserServicesInterface {
     }
 
     if (finished) {
-      return await this.saveFinishedVideo(idCourse, num, user, data);
+      return await this.saveFinishedVideo(idCourse, num, user, data, idVideo);
     }
 
     return await this.setInProgressTimeVideo(user, idVideo, idCourse, progress);
@@ -93,10 +100,10 @@ export class UserServices implements UserServicesInterface {
       return user.save();
     }
 
-    return this.saveVideoInProgress(user, idCourse, idVideo, 0);
+    return this.saveVideoInProgress(user, idCourse, idVideo, progress);
   }
 
-  async saveFinishedVideo(idCourse, num, user, data) {
+  async saveFinishedVideo(idCourse, num, user, data, idVideo) {
     const date = new Date();
     const course = await this.courseModule
       .findById(idCourse)
@@ -143,14 +150,17 @@ export class UserServices implements UserServicesInterface {
   }
 
   async addFinishedCourse(idUser, courseData) {
-    const { idVideo, idCourse, prevIdVIdeo } = courseData;
+    const { idVideo, idCourse } = courseData;
     const user = await this.userModule.findById(idUser).exec();
     const newArrayInProgress = this.deleteInprogress(user.inProgress, idVideo);
     user.inProgress = newArrayInProgress;
-    user.finished = user.finished.concat({
-      course: idCourse,
-      date: new Date(),
-    });
+    const existCourse = await this.courseModule.findById(idCourse);
+    if (!existCourse) {
+      user.finished = user.finished.concat({
+        course: idCourse,
+        date: new Date(),
+      });
+    }
     return await user.save();
   }
 
@@ -203,14 +213,18 @@ export class UserServices implements UserServicesInterface {
     return await this.userModule.create(user);
   }
 
-  async generateCertificate(data){
-
-    let certificate_template = certificate.replace('[%COURSE%]',data.courseName.toUpperCase())
-    certificate_template     = certificate_template.replace('[%NAME%]',data.userName.toUpperCase())
-    let options = { format: 'A4' };
-    let file = { content: certificate_template};
-    const buffer = await html_to_pdf.generatePdf(file, options)
-    return buffer.toString('base64')
-    
+  async generateCertificate(data) {
+    let certificate_template = certificate.replace(
+      '[%COURSE%]',
+      data.courseName.toUpperCase(),
+    );
+    certificate_template = certificate_template.replace(
+      '[%NAME%]',
+      data.userName.toUpperCase(),
+    );
+    const options = { format: 'A4' };
+    const file = { content: certificate_template };
+    const buffer = await html_to_pdf.generatePdf(file, options);
+    return buffer.toString('base64');
   }
 }

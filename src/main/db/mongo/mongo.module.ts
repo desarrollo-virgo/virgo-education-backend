@@ -10,6 +10,10 @@ import { Profile, ProfileSchema } from './schemas/profile.schema';
 import { RouteCourses, RouteCoursesSchema } from './schemas/route.schema';
 import { User, UserSchema } from './schemas/user.schema';
 import { Video, VideoSchema } from './schemas/video.schema';
+import {
+  VideoFinished,
+  VideoFinishedSchema,
+} from './schemas/videosFinished.schema';
 
 @Module({
   imports: [
@@ -26,6 +30,7 @@ import { Video, VideoSchema } from './schemas/video.schema';
       { name: RouteCourses.name, schema: RouteCoursesSchema },
       { name: Category.name, schema: CategorySchema },
       { name: Video.name, schema: VideoSchema },
+      { name: VideoFinished.name, schema: VideoFinishedSchema },
     ]),
   ],
   providers: [
