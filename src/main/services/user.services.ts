@@ -108,6 +108,11 @@ export class UserServices implements UserServicesInterface {
   }
 
   async saveFinishedVideo(idCourse, num, user, data, idVideo) {
+    // agregar videos a la tabla de videos finalizados
+    await this.addVideoFinishedToModel(idCourse, num, user, data, idVideo);
+
+    // agregar el siguiente video a inprogress
+
     const date = new Date();
     const course = await this.courseModule
       .findById(idCourse)
@@ -125,13 +130,41 @@ export class UserServices implements UserServicesInterface {
         return inp.course.id == idCourse;
       });
       user.inProgress[indVideo] = dataProgress;
-      // user.inProgress.push(dataProgress);
     } else {
-      user.inProgress = undefined;
-      await this.addFinishedCourse(user.id, data);
+      const inProgressNew = user.inProgress.filter((inpro) => {
+        return inpro.video.id !== idVideo;
+      });
+      user.inProgress = inProgressNew.length === 0 ? undefined : inProgressNew;
     }
     return user.save();
   }
+
+  async addVideoFinishedToModel(idCourse, num, user, data, idVideo) {
+    const courseToFinish = await this.courseModule.findById(idCourse);
+    const videosFromCourse = courseToFinish.videos.length;
+
+    const videoFinishedExist = await this.videoFinishedModule.find({
+      video: idVideo,
+      user: user._id,
+    });
+
+    if (videoFinishedExist.length === 0) {
+      await this.videoFinishedModule.create({
+        user: user._id,
+        video: idVideo,
+        course: idCourse,
+      });
+    }
+    const videoCourseFinished = await this.videoFinishedModule.find({
+      course: idCourse,
+      user: user._id,
+    });
+
+    if (videoCourseFinished.length === videosFromCourse) {
+      await this.addFinishedCourse(user.id, data);
+    }
+  }
+
   saveVideoInProgress(user, idCourse, idVideo, progress) {
     const date = new Date();
     const dataProgress = {
@@ -155,16 +188,28 @@ export class UserServices implements UserServicesInterface {
 
   async addFinishedCourse(idUser, courseData) {
     const { idVideo, idCourse } = courseData;
-    const user = await this.userModule.findById(idUser).exec();
-    const newArrayInProgress = this.deleteInprogress(user.inProgress, idVideo);
-    user.inProgress = newArrayInProgress;
-    const existCourse = await this.courseModule.findById(idCourse);
-    if (!existCourse) {
-      user.finished = user.finished.concat({
-        course: idCourse,
-        date: new Date(),
-      });
+    const user = await this.userModule.findById(idUser);
+    const result = JSON.stringify(user);
+    const resultJSON = JSON.parse(result);
+    const courseExist = resultJSON.finished.some((fin) => {
+      return fin.course === idCourse;
+    });
+    if (courseExist) {
+      return;
     }
+    user.finished = user.finished.concat({
+      course: idCourse,
+      date: new Date(),
+    });
+    // const newArrayInProgress = this.deleteInprogress(user.inProgress, idVideo);
+    // user.inProgress = newArrayInProgress;
+    // const existCourse = await this.courseModule.findById(idCourse);
+    // if (!existCourse) {
+    //   user.finished = user.finished.concat({
+    //     course: idCourse,
+    //     date: new Date(),
+    //   });
+    // }
     return await user.save();
   }
 
