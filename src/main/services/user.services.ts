@@ -291,9 +291,9 @@ export class UserServices implements UserServicesInterface {
 
   getRanking(stars) {
     const ranking = {
-      Bronze: [0, 5],
-      Silver: [6, 10],
-      Gold: [11, 9999999],
+      Bronze: [0, 10],
+      Silver: [11, 19],
+      Gold: [20, 9999999],
     };
 
     const ranks = Object.keys(ranking);
@@ -309,6 +309,7 @@ export class UserServices implements UserServicesInterface {
       studyHours: 0,
       completedRoutes: 0,
       rank: '',
+      completedCourses: 0
     };
 
     const userInfo = await this.userModule.findById(idUser);
@@ -318,6 +319,7 @@ export class UserServices implements UserServicesInterface {
       coursesId.push(value['course']);
     });
 
+    userProgress['completedCourses'] = coursesId.length
     userProgress['stars'] = coursesId.length;
     userProgress['rank'] = this.getRanking(userProgress['stars']);
 
