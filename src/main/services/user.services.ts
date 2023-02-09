@@ -3,15 +3,17 @@ import { Model } from 'mongoose';
 import { UserServicesInterface } from 'src/context/courses/domain/courses/interfaces/user.interface';
 import { Course, CoursesDocument } from '../db/mongo/schemas/course.schema';
 import { User, UserDocument } from '../db/mongo/schemas/user.schema';
-import { Video } from '../db/mongo/schemas/video.schema';
 import {
   VideoFinished,
   VideoFinishedDocument,
 } from '../db/mongo/schemas/videosFinished.schema';
-import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
 import certificate from './certificate';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const html_to_pdf = require('html-pdf-node');
+import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
+import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const puppeteer = require('puppeteer');
 
 export class UserServices implements UserServicesInterface {
   constructor(
@@ -21,6 +23,8 @@ export class UserServices implements UserServicesInterface {
     private courseModule: Model<CoursesDocument>,
     @InjectModel(VideoFinished.name)
     private videoFinishedModule: Model<VideoFinishedDocument>,
+    @InjectModel(Video.name)
+    private videoModule: Model<VideoDocument>,
     private sheetServiceClient: GoogleSheetClient,
   ) {}
   async getAllUser() {
@@ -222,9 +226,70 @@ export class UserServices implements UserServicesInterface {
       '[%NAME%]',
       data.userName.toUpperCase(),
     );
-    const options = { format: 'A4' };
-    const file = { content: certificate_template };
-    const buffer = await html_to_pdf.generatePdf(file, options);
-    return buffer.toString('base64');
+    certificate_template = certificate_template.replace(
+      '[%PROFESSOR%]',
+      data.userName.toUpperCase(),
+    );
+    certificate_template = certificate_template.replace(
+      '[%DATE%]',
+      data.courseDate.split('T')[0],
+    );
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.setContent(certificate_template, {
+      waitUntil: 'networkidle0',
+    });
+    const pdf = await page.pdf({ format: 'A0', landscape: true });
+    await browser.close();
+    return pdf.toString('base64');
+  }
+
+  getRanking(stars) {
+    const ranking = {
+      Bronze: [0, 5],
+      Silver: [6, 10],
+      Gold: [11, 9999999],
+    };
+
+    const ranks = Object.keys(ranking);
+    for (let i = 0; i < ranks.length; i++) {
+      const rank = ranking[ranks[i]];
+      if (stars >= rank[0] && stars <= rank[1]) return ranks[i];
+    }
+  }
+
+  async getProgressInfo(idUser) {
+    const userProgress = {
+      stars: 0,
+      studyHours: 0,
+      completedRoutes: 0,
+      rank: '',
+    };
+
+    const userInfo = await this.userModule.findById(idUser);
+    const finishedCourses = userInfo['finished'];
+    const coursesId = [];
+    finishedCourses.map((value, index) => {
+      coursesId.push(value['course']);
+    });
+
+    userProgress['stars'] = coursesId.length;
+    userProgress['rank'] = this.getRanking(userProgress['stars']);
+
+    const coursesInfo = await this.courseModule.find({ id: coursesId });
+    const videosId = [];
+    const routesId = [];
+    coursesInfo.map((value, index) => {
+      coursesId.concat(value['videos']);
+      routesId.concat(value['route']);
+    });
+    userProgress['completedRoutes'] = [...new Set(routesId)].length;
+
+    const videosInfo = await this.videoModule.find({ id: videosId });
+    videosInfo.map((value, index) => {
+      userProgress['studyHours'] += (value['duration'] || 0) / 3600;
+    });
+
+    return userProgress;
   }
 }
