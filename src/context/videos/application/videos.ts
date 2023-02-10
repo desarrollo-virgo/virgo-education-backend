@@ -28,6 +28,16 @@ export class Videos {
     return this.createResponse(response);
   }
 
+  async addQuestions(idVideo, body) {
+    const response = await this.services.addQuestions(idVideo, body);
+    return this.createResponse(response);
+  }
+
+  async verifyQuestion(idVideo, option) {
+    const response = await this.services.verifyQuestion(idVideo, option);
+    return this.createResponse(response);
+  }
+
   createResponse(data: any = {}) {
     const response = {
       status: 'ok',

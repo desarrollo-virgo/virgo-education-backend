@@ -33,4 +33,24 @@ export class VideosController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @Post('/:idVideo/questions')
+  async addQuestions(@Param() params: any, @Body() body) {
+    const { idVideo } = params;
+    try {
+      return await this.videos.addQuestions(idVideo, body);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('/:idVideo/questions/verify/:option')
+  async verifyQuestion(@Param() params: any, @Body() body) {
+    const { idVideo, option } = params;
+    try {
+      return await this.videos.verifyQuestion(idVideo, option);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

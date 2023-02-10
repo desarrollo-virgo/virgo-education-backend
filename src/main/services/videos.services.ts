@@ -1,7 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { throwError } from 'rxjs';
 import { VideoServiceInterface } from 'src/context/videos/application/videosServiceIterface';
+import {
+  Question,
+  QuestionDocument,
+} from '../db/mongo/schemas/question.schema';
 import { User, UserDocument } from '../db/mongo/schemas/user.schema';
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
 
@@ -9,9 +12,41 @@ export class VideosServices implements VideoServiceInterface {
   constructor(
     @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Question.name) private questionsModel: Model<QuestionDocument>,
   ) {}
-  async updateVideo(id, dataToUpdate: any) {
-    return await this.videoModel.findByIdAndUpdate(id, { ...dataToUpdate });
+  async updateVideo(id, dataToUpdate) {
+    await this.videoModel.findByIdAndUpdate(id, { ...dataToUpdate });
+  }
+
+  async addQuestions(idVideo, body) {
+    body['video'] = idVideo;
+    const question = await this.questionsModel.findByIdAndUpdate(
+      idVideo,
+      body,
+      {
+        upsert: true,
+        new: true,
+      },
+    );
+    const questionJSON = question.toJSON();
+    delete questionJSON['_id'];
+    delete questionJSON['__v'];
+    return questionJSON;
+  }
+
+  async verifyQuestion(idVideo, option) {
+    const optionSelected = Number(option);
+    const verify = await this.questionsModel.findById(idVideo);
+    let questionResponse = false;
+    verify.options.forEach((question) => {
+      if (question.number === optionSelected && question.correct) {
+        questionResponse = true;
+      }
+    });
+    // const questionJSON = question.toJSON();
+    // delete questionJSON['_id'];
+    // delete questionJSON['__v'];
+    return questionResponse;
   }
 
   async averageScore(idVideo, idUser, scoreVideo) {

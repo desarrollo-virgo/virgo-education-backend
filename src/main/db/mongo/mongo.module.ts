@@ -7,6 +7,7 @@ import { Category, CategorySchema } from './schemas/category.schema';
 import { Course, CourseSchema } from './schemas/course.schema';
 import { Directives, DirectivesSchema } from './schemas/directive.schema';
 import { Profile, ProfileSchema } from './schemas/profile.schema';
+import { Question, QuestionSchema } from './schemas/question.schema';
 import { RouteCourses, RouteCoursesSchema } from './schemas/route.schema';
 import { User, UserSchema } from './schemas/user.schema';
 import { Video, VideoSchema } from './schemas/video.schema';
@@ -31,6 +32,7 @@ import {
       { name: Category.name, schema: CategorySchema },
       { name: Video.name, schema: VideoSchema },
       { name: VideoFinished.name, schema: VideoFinishedSchema },
+      { name: Question.name, schema: QuestionSchema },
     ]),
   ],
   providers: [
