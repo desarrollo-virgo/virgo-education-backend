@@ -22,6 +22,9 @@ export class User {
   @Prop()
   profile: string;
 
+  @Prop()
+  rut: string;
+
   @Prop({
     type: [
       {

@@ -12,6 +12,10 @@ import certificate from './certificate';
 const html_to_pdf = require('html-pdf-node');
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
 import { GoogleSheetClient } from '../external/googleSheet/googleSheetClient';
+import {
+  Directives,
+  DirectivesDocument,
+} from '../db/mongo/schemas/directive.schema';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const puppeteer = require('puppeteer');
 
@@ -25,6 +29,8 @@ export class UserServices implements UserServicesInterface {
     private videoFinishedModule: Model<VideoFinishedDocument>,
     @InjectModel(Video.name)
     private videoModule: Model<VideoDocument>,
+    @InjectModel(Directives.name)
+    private directivesModule: Model<DirectivesDocument>,
     private sheetServiceClient: GoogleSheetClient,
   ) {}
   async getAllUser() {
@@ -226,6 +232,21 @@ export class UserServices implements UserServicesInterface {
 
   async readSheet() {
     const result = await this.sheetServiceClient.getInfo();
+    const infoInstitucion = result[0];
+    const institucionData = {
+      sostenedor: {
+        name: infoInstitucion.sostenedor.trim().toLowerCase(),
+      },
+      city: infoInstitucion.comuna.trim().toLowerCase(),
+      pais: infoInstitucion.pais.trim().toLowerCase(),
+      name: infoInstitucion.institucion.trim().toLowerCase(),
+    };
+    const resultDirective = await this.directivesModule.find({
+      name: institucionData.sostenedor.name,
+    });
+    if (resultDirective.length === 0) {
+      await this.directivesModule.create(institucionData);
+    }
     for (let index = 0; index < result.length; index++) {
       const element = result[index];
       const userData = {
@@ -233,6 +254,7 @@ export class UserServices implements UserServicesInterface {
         email: element.correo.trim().toLowerCase(),
         profile: element.perfil.trim().toLowerCase(),
         directive: element.institucion.trim().toLowerCase(),
+        rut: element.rut.trim().toLowerCase(),
       };
       await this.saveUser(userData);
     }
