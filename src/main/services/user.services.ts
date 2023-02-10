@@ -253,7 +253,7 @@ export class UserServices implements UserServicesInterface {
         name: element.nombre.trim().toLowerCase(),
         email: element.correo.trim().toLowerCase(),
         profile: element.perfil.trim().toLowerCase(),
-        directive: element.institucion.trim().toLowerCase(),
+        directive: institucionData.sostenedor.name,
         rut: element.rut.trim().toLowerCase(),
       };
       await this.saveUser(userData);
