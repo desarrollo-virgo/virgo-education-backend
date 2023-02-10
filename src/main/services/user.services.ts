@@ -104,8 +104,8 @@ export class UserServices implements UserServicesInterface {
         inprogress.video.id == idVideo || inprogress.course.id === idCourse
       );
     });
-
     if (indexVideo >= 0) {
+      user.inProgress[indexVideo].video = idVideo;
       user.inProgress[indexVideo].progress = progress;
       return user.save();
     }
