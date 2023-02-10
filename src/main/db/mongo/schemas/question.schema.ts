@@ -6,26 +6,16 @@ export type QuestionDocument = HydratedDocument<Question>;
 
 @Schema({ timestamps: true })
 export class Question {
-  @Prop()
-  question: string;
-
   @Prop({
     type: [
       {
-        option: String,
+        question: String,
         number: Number,
-        correct: Boolean,
+        options: [{ option: String, number: Number, correct: Boolean }],
       },
     ],
   })
-  options: [
-    {
-      option: string;
-      number: number;
-      correct: boolean;
-    },
-  ];
-
+  questions: any;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Video' })
   video: mongoose.Schema.Types.ObjectId;
 }
