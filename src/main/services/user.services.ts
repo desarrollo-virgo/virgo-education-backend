@@ -88,7 +88,7 @@ export class UserServices implements UserServicesInterface {
       });
 
     if (user.inProgress.length === 0) {
-      return this.saveVideoInProgress(user, idCourse, idVideo, 0);
+      return this.saveVideoInProgress(user, idCourse, idVideo, progress);
     }
 
     if (finished) {
