@@ -34,6 +34,17 @@ export class VideosServices implements VideoServiceInterface {
     return questionJSON;
   }
 
+  async getQuestions(idVideo, body) {
+    body['video'] = idVideo;
+    const question = await this.questionsModel.findById(idVideo);
+    if (!question) {
+      return null;
+    }
+    const questionJSON = question.toJSON();
+    delete questionJSON['_id'];
+    delete questionJSON['__v'];
+    return questionJSON;
+  }
   async verifyQuestion(idVideo, question, option) {
     const optionSelected = Number(option);
     const numberQuestion = Number(question);

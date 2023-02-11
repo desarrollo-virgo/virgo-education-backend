@@ -33,6 +33,11 @@ export class Videos {
     return this.createResponse(response);
   }
 
+  async getQuestions(idVideo, body) {
+    const response = await this.services.getQuestions(idVideo, body);
+    return this.createResponse(response);
+  }
+
   async verifyQuestion(idVideo, question, option) {
     const response = await this.services.verifyQuestion(
       idVideo,

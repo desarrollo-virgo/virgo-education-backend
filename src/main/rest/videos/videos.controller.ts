@@ -44,6 +44,16 @@ export class VideosController {
     }
   }
 
+  @Get('/:idVideo/questions')
+  async getQuestions(@Param() params: any, @Body() body) {
+    const { idVideo } = params;
+    try {
+      return await this.videos.getQuestions(idVideo, body);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get('/:idVideo/questions/verify/:question/:option')
   async verifyQuestion(@Param() params) {
     const { idVideo, question, option } = params;
