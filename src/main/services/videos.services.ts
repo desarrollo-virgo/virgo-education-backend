@@ -46,24 +46,22 @@ export class VideosServices implements VideoServiceInterface {
     return questionJSON;
   }
   async verifyQuestion(idVideo, question, option) {
-    const optionSelected = Number(option);
-    const numberQuestion = Number(question);
-    const verify = await this.questionsModel.findById(idVideo);
+    // const optionSelected = Number(option);
+    // const numberQuestion = Number(question);
+    // const verify = await this.questionsModel.findById(idVideo);
     let questionResponse = false;
-    const questionSelect = verify.questions.filter((question) => {
-      return question.number === numberQuestion;
-    });
-    if (questionSelect.length === 0) {
-      return '';
-    }
-    questionSelect[0].options.forEach((question) => {
-      if (question.number === optionSelected && question.correct) {
-        questionResponse = true;
-      }
-    });
-    // const questionJSON = question.toJSON();
-    // delete questionJSON['_id'];
-    // delete questionJSON['__v'];
+    // const questionSelect = verify.questions.filter((question) => {
+    //   return question.number === numberQuestion;
+    // });
+    // if (questionSelect.length === 0) {
+    //   return '';
+    // }
+    // questionSelect[0].options.forEach((question) => {
+    //   if (question.number === optionSelected && question.correct) {
+    //     questionResponse = true;
+    //   }
+    // });
+
     return questionResponse;
   }
 
