@@ -38,12 +38,8 @@ export class Videos {
     return this.createResponse(response);
   }
 
-  async verifyQuestion(idVideo, question, option) {
-    const response = await this.services.verifyQuestion(
-      idVideo,
-      question,
-      option,
-    );
+  async verifyQuestion(idVideo, answers) {
+    const response = await this.services.verifyQuestion(idVideo, answers);
     return this.createResponse(response);
   }
 

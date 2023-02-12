@@ -3,5 +3,5 @@ export class VideoServiceInterface {
   averageScore: (idvideo, iduser, score) => Promise<any>;
   addQuestions: (idVideo, body) => Promise<any>;
   getQuestions: (idVideo, body) => Promise<any>;
-  verifyQuestion: (idVideo, question, option) => Promise<any>;
+  verifyQuestion: (idVideo, answers) => Promise<any>;
 }
