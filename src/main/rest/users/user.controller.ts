@@ -93,4 +93,10 @@ export class UserController {
     const { idUser } = param;
     return this.user.getProgressInfo(idUser)
   }
+
+  @Get('/info/professors')
+  getInfoProfessors(@Param() param){
+    const { idUser } = param;
+    return this.user.getInfoProfessors()
+  }
 }

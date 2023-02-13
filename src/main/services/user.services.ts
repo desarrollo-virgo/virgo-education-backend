@@ -330,12 +330,13 @@ export class UserServices implements UserServicesInterface {
       stars: 0,
       studyHours: 0,
       completedRoutes: 0,
-      rank: '',
+      rank: 'Bronze',
       completedCourses: 0
     };
 
     const userInfo = await this.userModule.findById(idUser);
     const finishedCourses = userInfo['finished'];
+    if(finishedCourses.length == 0) return userProgress
     const coursesId = [];
     finishedCourses.map((value, index) => {
       coursesId.push(value['course']);
@@ -348,9 +349,13 @@ export class UserServices implements UserServicesInterface {
     const coursesInfo = await this.courseModule.find({ id: coursesId });
     const videosId = [];
     const routesId = [];
+    // console.log(coursesInfo[0].videos)
+    
     coursesInfo.map((value, index) => {
-      coursesId.concat(value['videos']);
-      routesId.concat(value['route']);
+      videosId.push(value['videos']);
+      routesId.push(value['route']);
+      // videosId.push(value['videos'])
+      
     });
     userProgress['completedRoutes'] = [...new Set(routesId)].length;
 
@@ -360,5 +365,42 @@ export class UserServices implements UserServicesInterface {
     });
 
     return userProgress;
+  }
+
+
+  async getInfoProfessors(){
+
+    const userInfo = await this.userModule.find({'profile':'profesor'});
+    const professorsInfo = []
+
+    const directives = await this.directivesModule.find()
+    const directiveCountry = {}
+    const directiveCommune = {}
+    const directiveSostenedor = {}
+
+    for (let i = 0; i < directives.length; i++) {
+      const directive = directives[i];
+      directiveCountry[directive.name] = directive.country || ''
+      directiveCommune[directive.name] = directive.city || ''
+      // directiveSostenedor[directive.name] = directive.sostenedor || ''
+      directiveSostenedor[directive.name] = ''
+    }
+
+    for (let i = 0; i < userInfo.length; i++) {
+      const user = userInfo[i];
+      const info = await this.getProgressInfo(user['_id'])
+      info['name'] = user.name
+      info['rut'] = user.rut
+      info['school'] = user.directive
+      info['commune'] = directiveCommune[user.directive]
+      info['country'] = directiveCountry[user.directive]
+      info['sostenedor'] = directiveSostenedor[user.directive]
+      professorsInfo.push(info)
+    }
+
+    
+
+
+    return professorsInfo
   }
 }
