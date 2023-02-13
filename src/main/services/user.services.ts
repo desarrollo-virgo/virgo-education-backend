@@ -242,7 +242,7 @@ export class UserServices implements UserServicesInterface {
       name: infoInstitucion.institucion.trim().toLowerCase(),
     };
     const resultDirective = await this.directivesModule.find({
-      name: institucionData.sostenedor.name,
+      name: infoInstitucion.institucion.trim().toLowerCase(),
     });
     if (resultDirective.length === 0) {
       await this.directivesModule.create(institucionData);
