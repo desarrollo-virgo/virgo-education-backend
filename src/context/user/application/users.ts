@@ -80,6 +80,10 @@ export class Users {
     return result
   }
 
+  async getInfoProfessors(){
+    const result = await this.services.getInfoProfessors()
+    return result
+  }
   createResponse(data) {
     return {
       status: 'ok',
