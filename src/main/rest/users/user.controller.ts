@@ -95,8 +95,7 @@ export class UserController {
   }
 
   @Get('/info/professors')
-  getInfoProfessors(@Param() param){
-    const { idUser } = param;
+  getInfoProfessors(){
     return this.user.getInfoProfessors()
   }
 }
