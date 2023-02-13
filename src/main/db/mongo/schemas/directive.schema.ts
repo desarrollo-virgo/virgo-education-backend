@@ -18,7 +18,7 @@ export class Directives {
   country: string;
 
   @Prop({
-    type: { nombre: String, rut: String },
+    type: { name: String, rut: String },
   })
   sostenedor: {
     name: string;
