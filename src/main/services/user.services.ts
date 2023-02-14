@@ -382,8 +382,8 @@ export class UserServices implements UserServicesInterface {
       const directive = directives[i];
       directiveCountry[directive.name] = directive.country || ''
       directiveCommune[directive.name] = directive.city || ''
-      // directiveSostenedor[directive.name] = directive.sostenedor || ''
-      directiveSostenedor[directive.name] = ''
+      directiveSostenedor[directive.name] = directive.sostenedor.name || ''
+      // directiveSostenedor[directive.name] = ''
     }
 
     for (let i = 0; i < userInfo.length; i++) {
