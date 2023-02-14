@@ -23,6 +23,11 @@ export class Videos {
     return this.createResponse();
   }
 
+  async uploadFile(file, video) {
+    const result = await this.services.uploadFile(file, video);
+    return this.createResponse(result);
+  }
+
   async averageScore(idVideo, idUser, score) {
     const response = await this.services.averageScore(idVideo, idUser, score);
     return this.createResponse(response);
@@ -40,6 +45,16 @@ export class Videos {
 
   async verifyQuestion(idVideo, answers) {
     const response = await this.services.verifyQuestion(idVideo, answers);
+    return this.createResponse(response);
+  }
+
+  async getFiles(idVideo) {
+    const response = await this.services.getFiles(idVideo);
+    return this.createResponse(response);
+  }
+
+  async deleteFile(video, file) {
+    const response = await this.services.deleteFile(video, file);
     return this.createResponse(response);
   }
 

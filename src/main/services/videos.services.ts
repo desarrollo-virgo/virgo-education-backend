@@ -1,3 +1,4 @@
+import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { VideoServiceInterface } from 'src/context/videos/application/videosServiceIterface';
@@ -9,6 +10,9 @@ import { User, UserDocument } from '../db/mongo/schemas/user.schema';
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
 
 export class VideosServices implements VideoServiceInterface {
+  azureConnection =
+    'DefaultEndpointsProtocol=https;AccountName=virgostore;AccountKey=Hi3flZFsAiHMLkS4V/x/ZDP9cS3R7hgI4+6L5BVL25Ezf8AiKlzsxLRJpD2kwJYXcmtnhbwBDS1E+ASt6HKGfw==;EndpointSuffix=core.windows.net';
+  containerName = 'files';
   constructor(
     @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
@@ -89,5 +93,87 @@ export class VideosServices implements VideoServiceInterface {
     dataUser.save();
     await dataVideo.save();
     return { average: newAverage };
+  }
+
+  getBlobClient(imageName: string, containerName: string): BlockBlobClient {
+    const blobClientService = BlobServiceClient.fromConnectionString(
+      this.azureConnection,
+    );
+    const containerClient = blobClientService.getContainerClient(containerName);
+    const blobClient = containerClient.getBlockBlobClient(imageName);
+    return blobClient;
+  }
+
+  async addFile(dataFile, video) {
+    const videoData = await this.videoModel.findById(video);
+    if (videoData.files && videoData.files.length === 0) {
+      videoData.files.push(dataFile);
+    } else {
+      videoData.files = videoData.files.concat(dataFile);
+    }
+    const result = await videoData.save();
+    const resultObj = result.toObject();
+    resultObj.files.forEach((file) => {
+      file['id'] = file['_id'];
+    });
+    return resultObj.files;
+  }
+  async uploadFile(file: Express.Multer.File, video) {
+    const containerName = 'files';
+    const fileParts = file.originalname.split('.');
+    const extension = fileParts[fileParts.length - 1];
+    const fileName = `${video}-${fileParts[0]}`;
+    const _fileName = `${fileName}.${extension}`;
+    const blobClient = this.getBlobClient(_fileName, containerName);
+    const url = `https://virgostore.blob.core.windows.net/${containerName}/${_fileName}`;
+    const dataFile = {
+      name: _fileName,
+      url,
+    };
+    console.log('subiendo archivo...');
+    await blobClient.uploadData(file.buffer);
+    const resultVideoDB = await this.addFile(dataFile, video);
+    return resultVideoDB;
+  }
+
+  async getFiles(video) {
+    const result = await this.videoModel.findById(video);
+    const resultObj: any = result.toObject();
+    resultObj.files.forEach((file) => {
+      file['id'] = file['_id'];
+      delete file._id;
+    });
+    return resultObj.files;
+  }
+
+  async deleteFileStorage(name) {
+    const blobClientService = BlobServiceClient.fromConnectionString(
+      this.azureConnection,
+    );
+    const containerName = 'files';
+    const containerClient = blobClientService.getContainerClient(containerName);
+    const containerFile = containerClient.getBlockBlobClient(name);
+    await containerFile.delete();
+  }
+
+  async deleteFile(video, idFile) {
+    const result = await this.videoModel.findById(video);
+    const nameFile: any = result.files.filter((file) => {
+      return file.id === idFile;
+    });
+    if (nameFile.length > 0) {
+      await this.deleteFileStorage(nameFile[0].name);
+    }
+    const newListFile = result.files.filter((file) => {
+      return file.id !== idFile;
+    });
+    result.files = newListFile;
+    result.save();
+    const resultObj: any = result.toObject();
+    resultObj.files.forEach((file) => {
+      file['id'] = file['_id'];
+      delete file._id;
+    });
+    return resultObj.files;
   }
 }

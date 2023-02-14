@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpException,
@@ -9,7 +10,10 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Videos } from 'src/context/videos/application/videos';
 
 @Controller('videos')
@@ -59,6 +63,36 @@ export class VideosController {
     const { idVideo } = params;
     try {
       return await this.videos.verifyQuestion(idVideo, body);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('/:idVideo/uploadFile')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadVideo(
+    @UploadedFile() file: Express.Multer.File,
+    @Param() data: any,
+  ) {
+    const { idVideo } = data;
+    return await this.videos.uploadFile(file, idVideo);
+  }
+
+  @Get('/:idVideo/files')
+  async getFiles(@Param() params) {
+    const { idVideo } = params;
+    try {
+      return await this.videos.getFiles(idVideo);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('/:idVideo/file/:idFile')
+  async deleteFile(@Param() params) {
+    const { idVideo, idFile } = params;
+    try {
+      return await this.videos.deleteFile(idVideo, idFile);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

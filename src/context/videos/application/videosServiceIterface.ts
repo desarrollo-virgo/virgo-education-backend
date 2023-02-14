@@ -4,4 +4,7 @@ export class VideoServiceInterface {
   addQuestions: (idVideo, body) => Promise<any>;
   getQuestions: (idVideo, body) => Promise<any>;
   verifyQuestion: (idVideo, answers) => Promise<any>;
+  uploadFile: (file, video) => Promise<any>;
+  getFiles: (video) => Promise<any>;
+  deleteFile: (video, file) => Promise<any>;
 }

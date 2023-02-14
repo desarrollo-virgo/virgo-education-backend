@@ -42,6 +42,17 @@ export class Video {
     numScore: number;
   };
 
+  @Prop({
+    type: [
+      {
+        url: String,
+        name: String,
+      },
+    ],
+    default: [],
+  })
+  files: any[];
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Course' })
   course: mongoose.Schema.Types.ObjectId;
 }
