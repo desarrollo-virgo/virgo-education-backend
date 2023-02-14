@@ -38,8 +38,8 @@ export class Videos {
     return this.createResponse(response);
   }
 
-  async getQuestions(idVideo, body) {
-    const response = await this.services.getQuestions(idVideo, body);
+  async getQuestions(idVideo, body, verify) {
+    const response = await this.services.getQuestions(idVideo, body, verify);
     return this.createResponse(response);
   }
 

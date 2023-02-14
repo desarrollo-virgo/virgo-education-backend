@@ -38,7 +38,7 @@ export class VideosServices implements VideoServiceInterface {
     return questionJSON;
   }
 
-  async getQuestions(idVideo, body) {
+  async getQuestions(idVideo, body, verify: string) {
     body['video'] = idVideo;
     const question = await this.questionsModel.findById(idVideo);
     if (!question) {
@@ -47,6 +47,13 @@ export class VideosServices implements VideoServiceInterface {
     const questionJSON = question.toJSON();
     delete questionJSON['_id'];
     delete questionJSON['__v'];
+    if (verify === 'false') {
+      questionJSON.questions.forEach((question) => {
+        question.options.forEach((option) => {
+          delete option.correct;
+        });
+      });
+    }
     return questionJSON;
   }
   async verifyQuestion(idVideo, answers) {
