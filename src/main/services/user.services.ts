@@ -58,6 +58,25 @@ export class UserServices implements UserServicesInterface {
     return user;
   }
 
+  async getUserForDirective(idDirective) {
+    const directive = await this.directivesModule.findById(idDirective);
+    const nameDirective = directive.name;
+    const users = await this.userModule
+      .find({
+        directive: nameDirective,
+        profile: { $ne: 'director' },
+      })
+      .and([{ profile: { $ne: 'virgo' } }]);
+    const usersMap = users.map((user) => {
+      return {
+        name: user.name,
+        email: user.email,
+        profile: user.profile,
+      };
+    });
+    return usersMap;
+  }
+
   async AddUser(data) {
     return await this.userModule.create(data);
   }

@@ -13,4 +13,5 @@ export interface UserServicesInterface {
   getProgressInfo: (idUser) => any;
   getInfoProfessors: () => any;
   enableUser: (idUser, enable) => any;
+  getUserForDirective: (directive) => any;
 }

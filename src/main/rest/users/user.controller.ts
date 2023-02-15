@@ -26,6 +26,12 @@ export class UserController {
     return this.user.getUser(idUser);
   }
 
+  @Get('/directive/:idDirective')
+  getUserForDirective(@Param() data) {
+    const { idDirective } = data;
+    return this.user.getUserForDirective(idDirective);
+  }
+
   @Get('/')
   getAllUsers() {
     return this.user.getAllUser();

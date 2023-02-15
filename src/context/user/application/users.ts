@@ -14,6 +14,10 @@ export class Users {
     return this.services.getAllUser();
   }
 
+  async getUserForDirective(directive) {
+    return await this.services.getUserForDirective(directive);
+  }
+
   async getUser(idUser) {
     const user = await this.services.getUser(idUser);
     const userData = {
