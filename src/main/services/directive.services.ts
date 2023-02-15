@@ -12,11 +12,24 @@ export class DirectiveServices implements DirectivesServicesInterface {
     private directive: Model<DirectivesDocument>,
   ) {}
 
-  addDirective(data: any) {
-    return this.directive.create(data);
+  async addDirective(data: any) {
+    return await this.directive.create(data);
   }
 
-  getDirective() {
-    return this.directive.find({});
+  async getDirectives() {
+    return await this.directive.find({});
+  }
+
+  async getDirective(idDirective) {
+    return await this.directive.findById(idDirective);
+  }
+
+  async excludeCourse(directive: any, course: any) {
+    const result = await this.directive.findById(directive);
+    if (result.excludeCourses.indexOf(course) < 0) {
+      result.excludeCourses.push(course);
+      return result.save();
+    }
+    return 'no se puede volver a agregar un curso';
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Param } from '@nestjs/common';
 import { Directive } from 'src/context/directive/application/directive';
 
 @Controller('directive')
@@ -13,5 +13,18 @@ export class DirectivesController {
   @Get('/')
   getDirectives() {
     return this.directive.getDirectives();
+  }
+
+  @Get('/:idDirective')
+  getDirective(@Param() params) {
+    const { idDirective } = params;
+    return this.directive.getDirective(idDirective);
+  }
+
+  @Post('/:idDirective/exclude')
+  excludeCourse(@Param() params, @Body() body) {
+    const { course } = body;
+    const { idDirective } = params;
+    return this.directive.excludeCourse(idDirective, course);
   }
 }

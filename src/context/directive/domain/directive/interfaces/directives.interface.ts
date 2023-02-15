@@ -1,4 +1,6 @@
 export interface DirectivesServicesInterface {
   addDirective: (data) => any;
-  getDirective: () => any;
+  getDirectives: () => any;
+  getDirective: (id) => any;
+  excludeCourse: (directive, course) => any;
 }

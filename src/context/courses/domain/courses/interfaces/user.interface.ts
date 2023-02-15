@@ -12,4 +12,5 @@ export interface UserServicesInterface {
   generateCertificate: (body) => any;
   getProgressInfo: (idUser) => any;
   getInfoProfessors: () => any;
+  enableUser: (idUser, enable) => any;
 }

@@ -20,7 +20,7 @@ export class Users {
       id: user.id,
       nombre: user.name,
       email: user.email,
-      directive: user.directive,
+      directive: user.directiveDetail,
       perfil: user.profile,
       inprogress: user.inProgress,
       finished: user.finished,
@@ -70,19 +70,24 @@ export class Users {
     return this.createResponse({});
   }
 
-  async generateCertificate(data){
-    const res = await this.services.generateCertificate(data)
-    return res
+  async generateCertificate(data) {
+    const res = await this.services.generateCertificate(data);
+    return res;
   }
 
-  async getProgressInfo(idUser){
-    const result = await this.services.getProgressInfo(idUser)
-    return result
+  async getProgressInfo(idUser) {
+    const result = await this.services.getProgressInfo(idUser);
+    return result;
   }
 
-  async getInfoProfessors(){
-    const result = await this.services.getInfoProfessors()
-    return result
+  async getInfoProfessors() {
+    const result = await this.services.getInfoProfessors();
+    return result;
+  }
+
+  async enableUser(idUser, enable) {
+    const result = await this.services.enableUser(idUser, enable);
+    return result;
   }
   createResponse(data) {
     return {

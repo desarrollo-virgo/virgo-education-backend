@@ -8,10 +8,29 @@ export class Directive {
   ) {}
 
   getDirectives() {
-    return this.services.getDirective();
+    return this.services.getDirectives();
   }
 
-  addDirective(data) {
-    return this.services.addDirective(data);
+  async getDirective(idDirective) {
+    const result = await this.services.getDirective(idDirective);
+    return this.createResponse(result);
+  }
+
+  async addDirective(data) {
+    const result = await this.services.addDirective(data);
+    return this.createResponse(result);
+  }
+
+  async excludeCourse(directive, course) {
+    const result = await this.services.excludeCourse(directive, course);
+    return this.createResponse(result);
+  }
+
+  createResponse(data: any) {
+    const response = {
+      status: 'ok',
+      payload: data,
+    };
+    return response;
   }
 }

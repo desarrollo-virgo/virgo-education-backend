@@ -11,6 +11,9 @@ export class User {
   @Prop({ unique: true })
   email: string;
 
+  @Prop({ type: Boolean, default: true })
+  enable: boolean;
+
   @Prop({ type: String, ref: 'Directives' })
   directive: string;
 

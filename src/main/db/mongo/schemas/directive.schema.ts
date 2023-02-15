@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export type DirectivesDocument = HydratedDocument<Directives>;
 
@@ -24,6 +24,9 @@ export class Directives {
     name: string;
     rut: string;
   };
+
+  @Prop({ type: [mongoose.Schema.Types.ObjectId] })
+  excludeCourses: any[];
 }
 
 export const DirectivesSchema = SchemaFactory.createForClass(Directives);

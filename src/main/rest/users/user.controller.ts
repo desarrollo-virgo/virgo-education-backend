@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Users } from 'src/context/user/application/users';
 
@@ -35,17 +36,11 @@ export class UserController {
     return this.user.addUser(data);
   }
 
-  // @Post('/:idUser/course/inProgress')
-  // addInProgressCourse(@Body() BodyData, @Param() param) {
-  //   const { idUser } = param;
-  //   const { idVideo, idCourse, prevIdVIdeo } = BodyData;
-  //   return this.user.addInProgressCourse(
-  //     idUser,
-  //     idCourse,
-  //     idVideo,
-  //     prevIdVIdeo,
-  //   );
-  // }
+  @Post('/:idUser/enable/:enable')
+  enableUser(@Param() data) {
+    const { idUser, enable } = data;
+    return this.user.enableUser(idUser, enable);
+  }
 
   @Post('/:idUser/course/inProgress')
   async addInProgressCourse(@Body() BodyData, @Param() param) {
@@ -84,18 +79,18 @@ export class UserController {
   }
 
   @Post('courseCertificate')
-  generateCertificate(@Body() data){
-    return this.user.generateCertificate(data)
+  generateCertificate(@Body() data) {
+    return this.user.generateCertificate(data);
   }
 
   @Get('/:idUser/progressInfo')
-  getProgressInfo(@Param() param){
+  getProgressInfo(@Param() param) {
     const { idUser } = param;
-    return this.user.getProgressInfo(idUser)
+    return this.user.getProgressInfo(idUser);
   }
 
   @Get('/info/professors')
-  getInfoProfessors(){
-    return this.user.getInfoProfessors()
+  getInfoProfessors() {
+    return this.user.getInfoProfessors();
   }
 }
