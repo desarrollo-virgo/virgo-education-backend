@@ -26,7 +26,7 @@ export class Directives {
   };
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId] })
-  excludeCourses: any[];
+  excludeCourses: string[];
 }
 
 export const DirectivesSchema = SchemaFactory.createForClass(Directives);

@@ -27,4 +27,11 @@ export class DirectivesController {
     const { idDirective } = params;
     return this.directive.excludeCourse(idDirective, course);
   }
+
+  @Post('/:idDirective/include')
+  includeCourse(@Param() params, @Body() body) {
+    const { course } = body;
+    const { idDirective } = params;
+    return this.directive.includeCourse(idDirective, course);
+  }
 }

@@ -32,4 +32,14 @@ export class DirectiveServices implements DirectivesServicesInterface {
     }
     return 'no se puede volver a agregar un curso';
   }
+
+  async includeCourse(directive: any, course: any) {
+    const result = await this.directive.findById(directive);
+    const courseInd = result.excludeCourses.indexOf(course);
+    if (courseInd >= 0) {
+      result.excludeCourses.splice(courseInd, 1);
+      return result.save();
+    }
+    return 'no se puede eliminar el curso';
+  }
 }

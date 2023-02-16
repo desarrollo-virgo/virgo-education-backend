@@ -26,6 +26,11 @@ export class Directive {
     return this.createResponse(result);
   }
 
+  async includeCourse(directive, course) {
+    const result = await this.services.includeCourse(directive, course);
+    return this.createResponse(result);
+  }
+
   createResponse(data: any) {
     const response = {
       status: 'ok',
