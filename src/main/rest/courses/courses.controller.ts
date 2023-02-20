@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -108,5 +110,15 @@ export class CoursesController {
   ) {
     const { idCourse } = data;
     return await this.courses.uploadVideo(file, idCourse);
+  }
+
+  @Get('/directive/:idDirectiva')
+  async getCoursesForDirective(@Param() params) {
+    const { idDirectiva } = params;
+    try {
+      return await this.courses.getCoursesForDirective(idDirectiva);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

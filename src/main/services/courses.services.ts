@@ -13,6 +13,10 @@ import {
 } from '../db/mongo/schemas/route.schema';
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
 import { getVideoDurationInSeconds } from 'get-video-duration';
+import {
+  Directives,
+  DirectivesDocument,
+} from '../db/mongo/schemas/directive.schema';
 export class CoursesServices implements courseServicesInterface {
   azureConnection =
     'DefaultEndpointsProtocol=https;AccountName=virgostore;AccountKey=Hi3flZFsAiHMLkS4V/x/ZDP9cS3R7hgI4+6L5BVL25Ezf8AiKlzsxLRJpD2kwJYXcmtnhbwBDS1E+ASt6HKGfw==;EndpointSuffix=core.windows.net';
@@ -22,6 +26,7 @@ export class CoursesServices implements courseServicesInterface {
     @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
     @InjectModel(RouteCourses.name)
     private routeModel: Model<RouteCoursesDocument>,
+    @InjectModel(Directives.name) private directive: Model<DirectivesDocument>,
   ) {}
   async addCourse(data) {
     return await this.courseModel.create(data);
@@ -169,5 +174,28 @@ export class CoursesServices implements courseServicesInterface {
       num,
       name,
     };
+  }
+
+  async getCoursesForDirective(idDirectiva) {
+    const directive = await this.directive.findById(idDirectiva);
+    const courses = await this.courseModel.find();
+    const result = courses.map((course) => {
+      let exclude = false;
+      directive.excludeCourses.forEach((excludeCourse) => {
+        if (!excludeCourse) {
+          exclude = false;
+          return;
+        }
+        if (excludeCourse.toString() === course['_id'].toString()) {
+          exclude = true;
+        }
+      });
+      return {
+        id: course._id,
+        name: course.name,
+        exclude: exclude,
+      };
+    });
+    return result;
   }
 }

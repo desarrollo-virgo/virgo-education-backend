@@ -18,4 +18,5 @@ export interface courseServicesInterface {
   updateCourse: (id, data) => Promise<any>;
   uploadCover: (file, video) => Promise<any>;
   uploadVideo: (file, video) => Promise<any>;
+  getCoursesForDirective: (directive) => Promise<any>;
 }

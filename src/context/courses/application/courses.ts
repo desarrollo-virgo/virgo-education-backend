@@ -186,4 +186,9 @@ export class Courses {
     };
     return this.createResponse(payload);
   }
+
+  async getCoursesForDirective(idDirectiva) {
+    const response = await this.services.getCoursesForDirective(idDirectiva);
+    return this.createResponse(response);
+  }
 }
