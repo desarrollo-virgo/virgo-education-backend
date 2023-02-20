@@ -124,7 +124,8 @@ export class CoursesServices implements courseServicesInterface {
     const blobClient = await this.getBlobClient(fileName, containerName);
     const url = `https://virgostore.blob.core.windows.net/images/${fileName}`;
     await this.updateCourse(course, { cover: url });
-    return await blobClient.uploadData(file.buffer);
+    await blobClient.uploadData(file.buffer);
+    return url
   }
 
   async uploadVideo(file: Express.Multer.File, course) {
