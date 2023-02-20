@@ -64,7 +64,7 @@ export class UserServices implements UserServicesInterface {
     const users = await this.userModule
       .find({
         directive: nameDirective,
-        profile: { $ne: 'director' },
+        profile: { $ne: 'directiva' },
       })
       .and([{ profile: { $ne: 'virgo' } }]);
     const usersMap = users.map((user) => {
@@ -72,6 +72,7 @@ export class UserServices implements UserServicesInterface {
         name: user.name,
         email: user.email,
         profile: user.profile,
+        enable: user.enable,
       };
     });
     return usersMap;
