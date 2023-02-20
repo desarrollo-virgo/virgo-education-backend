@@ -58,6 +58,11 @@ export class Videos {
     return this.createResponse(response);
   }
 
+  async getVideosForDirective(idDirectiva) {
+    const response = await this.services.getVideosForDirective(idDirectiva);
+    return this.createResponse(response);
+  }
+
   createResponse(data: any = {}) {
     const response = {
       status: 'ok',

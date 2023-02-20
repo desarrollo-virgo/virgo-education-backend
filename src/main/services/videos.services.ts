@@ -3,6 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { VideoServiceInterface } from 'src/context/videos/application/videosServiceIterface';
 import {
+  Directives,
+  DirectivesDocument,
+} from '../db/mongo/schemas/directive.schema';
+import {
   Question,
   QuestionDocument,
 } from '../db/mongo/schemas/question.schema';
@@ -17,6 +21,7 @@ export class VideosServices implements VideoServiceInterface {
     @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Question.name) private questionsModel: Model<QuestionDocument>,
+    @InjectModel(Directives.name) private directive: Model<DirectivesDocument>,
   ) {}
   async updateVideo(id, dataToUpdate) {
     await this.videoModel.findByIdAndUpdate(id, { ...dataToUpdate });
@@ -182,5 +187,11 @@ export class VideosServices implements VideoServiceInterface {
       delete file._id;
     });
     return resultObj.files;
+  }
+
+  async getVideosForDirective(idDirectiva) {
+    return await this.directive
+      .findById(idDirectiva)
+      .populate('excludeCourses');
   }
 }

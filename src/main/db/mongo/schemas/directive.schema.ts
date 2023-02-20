@@ -25,7 +25,7 @@ export class Directives {
     rut: string;
   };
 
-  @Prop({ type: [mongoose.Schema.Types.ObjectId] })
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Course' })
   excludeCourses: string[];
 }
 
