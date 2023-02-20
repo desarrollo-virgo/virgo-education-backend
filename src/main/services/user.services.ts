@@ -69,6 +69,7 @@ export class UserServices implements UserServicesInterface {
       .and([{ profile: { $ne: 'virgo' } }]);
     const usersMap = users.map((user) => {
       return {
+        id: user._id,
         name: user.name,
         email: user.email,
         profile: user.profile,
