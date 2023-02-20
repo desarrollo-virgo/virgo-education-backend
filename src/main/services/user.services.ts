@@ -336,7 +336,13 @@ export class UserServices implements UserServicesInterface {
       '[%DATE%]',
       data.courseDate.split('T')[0],
     );
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ 
+      headless: true ,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+      ]
+    });
     const page = await browser.newPage();
     await page.setContent(certificate_template, {
       waitUntil: 'networkidle0',
