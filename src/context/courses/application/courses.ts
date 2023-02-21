@@ -171,8 +171,8 @@ export class Courses {
   }
 
   async uploadCover(file: Express.Multer.File, course: string) {
-    await this.services.uploadCover(file, course);
-    return this.createResponse({});
+    const url = await this.services.uploadCover(file, course);
+    return this.createResponse({'url':url});
   }
 
   async uploadVideo(file: Express.Multer.File, course: string) {
