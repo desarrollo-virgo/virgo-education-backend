@@ -26,6 +26,6 @@ export class CategoryServices implements categoriesServicesInterface {
   }
 
   getCourseCategories(idcategory) {
-    return this.courseModel.find({ category: idcategory })
+    return this.courseModel.find({ category: idcategory });
   }
 }

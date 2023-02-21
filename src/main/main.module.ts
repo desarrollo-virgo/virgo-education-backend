@@ -27,6 +27,9 @@ import { GoogleSheetClient } from './external/googleSheet/googleSheetClient';
 import { VideosServices } from './services/videos.services';
 import { VideosController } from './rest/videos/videos.controller';
 import { Videos } from 'src/context/videos/application/videos';
+import { TagsServices } from './services/tags.services';
+import { TagsController } from './rest/tags/tags.controller';
+import { Tags } from 'src/context/tags/application';
 
 @Module({
   imports: [
@@ -49,6 +52,7 @@ import { Videos } from 'src/context/videos/application/videos';
     UserController,
     WebhooksController,
     VideosController,
+    TagsController,
   ],
   providers: [
     Courses,
@@ -57,6 +61,7 @@ import { Videos } from 'src/context/videos/application/videos';
     Users,
     Videos,
     RoutesCourses,
+    Tags,
     CoursesServices,
     CategoryServices,
     RouteServices,
@@ -64,6 +69,7 @@ import { Videos } from 'src/context/videos/application/videos';
     WebhooksServices,
     GoogleSheetClient,
     VideosServices,
+    TagsServices,
     { provide: 'courseServices', useClass: CoursesServices },
     { provide: 'directiveServices', useClass: DirectiveServices },
     { provide: 'routeServices', useClass: RouteServices },
@@ -71,6 +77,7 @@ import { Videos } from 'src/context/videos/application/videos';
     { provide: 'userServices', useClass: UserServices },
     { provide: 'webhooksServices', useClass: WebhooksServices },
     { provide: 'videoServices', useClass: VideosServices },
+    { provide: 'tagServices', useClass: TagsServices },
   ],
   exports: [CoursesServices],
 })

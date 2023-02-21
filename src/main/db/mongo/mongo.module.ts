@@ -9,6 +9,7 @@ import { Directives, DirectivesSchema } from './schemas/directive.schema';
 import { Profile, ProfileSchema } from './schemas/profile.schema';
 import { Question, QuestionSchema } from './schemas/question.schema';
 import { RouteCourses, RouteCoursesSchema } from './schemas/route.schema';
+import { Tag, TagSchema } from './schemas/tags.schema';
 import { User, UserSchema } from './schemas/user.schema';
 import { Video, VideoSchema } from './schemas/video.schema';
 import {
@@ -33,6 +34,7 @@ import {
       { name: Video.name, schema: VideoSchema },
       { name: VideoFinished.name, schema: VideoFinishedSchema },
       { name: Question.name, schema: QuestionSchema },
+      { name: Tag.name, schema: TagSchema },
     ]),
   ],
   providers: [
