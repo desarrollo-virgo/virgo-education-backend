@@ -114,6 +114,12 @@ export class Courses {
       };
     }
 
+    if (data?.expert) {
+      dataToUpdate = {
+        expert: data.expert,
+      };
+    }
+
     await this.services.updateCourse(id, dataToUpdate);
     return this.createResponse({});
   }
@@ -172,7 +178,7 @@ export class Courses {
 
   async uploadCover(file: Express.Multer.File, course: string) {
     const url = await this.services.uploadCover(file, course);
-    return this.createResponse({'url':url});
+    return this.createResponse({ url: url });
   }
 
   async uploadVideo(file: Express.Multer.File, course: string) {
