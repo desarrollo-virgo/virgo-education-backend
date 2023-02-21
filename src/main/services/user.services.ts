@@ -320,6 +320,10 @@ export class UserServices implements UserServicesInterface {
   }
 
   async generateCertificate(data) {
+
+    let course = await this.courseModule.findById(data.courseId)
+    let expert = course['expert'] || ''
+
     let certificate_template = certificate.replace(
       '[%COURSE%]',
       data.courseName.toUpperCase(),
@@ -330,7 +334,7 @@ export class UserServices implements UserServicesInterface {
     );
     certificate_template = certificate_template.replace(
       '[%PROFESSOR%]',
-      data.userName.toUpperCase(),
+      expert.toUpperCase(),
     );
     certificate_template = certificate_template.replace(
       '[%DATE%]',
