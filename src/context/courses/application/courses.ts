@@ -160,6 +160,7 @@ export class Courses {
         position: video.num,
         score: video.score,
         urlEmbed: video.url,
+        files: video.files,
       };
     });
     return videosInfo;
