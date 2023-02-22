@@ -108,8 +108,12 @@ export class CoursesController {
     @UploadedFile() file: Express.Multer.File,
     @Param() data: any,
   ) {
-    const { idCourse } = data;
-    return await this.courses.uploadVideo(file, idCourse);
+    try {
+      const { idCourse } = data;
+      return await this.courses.uploadVideo(file, idCourse);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get('/directive/:idDirectiva')

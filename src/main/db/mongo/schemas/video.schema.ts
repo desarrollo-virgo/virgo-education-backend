@@ -27,6 +27,9 @@ export class Video {
   @Prop()
   guid: string;
 
+  @Prop({ default: false })
+  uploaded: boolean;
+
   @Prop({
     default: {
       averageScore: 0,
