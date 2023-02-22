@@ -394,11 +394,10 @@ export class UserServices implements UserServicesInterface {
     const coursesInfo = await this.courseModule.find({ id: coursesId });
     const videosId = [];
     const routesId = [];
-    // console.log(coursesInfo[0].videos)
+
     coursesInfo.map((value, index) => {
       videosId.push(value['videos']);
       routesId.push(value['route']);
-      // videosId.push(value['videos'])
     });
     userProgress['completedRoutes'] = [...new Set(routesId)].length;
 
@@ -411,7 +410,11 @@ export class UserServices implements UserServicesInterface {
   }
 
   async getInfoProfessors() {
+
     const userInfo = await this.userModule.find({ profile: 'profesor' });
+    const directorsInfo = await this.userModule.find({ profile: 'director' });
+    const directivesName = {}
+    directorsInfo.map( (director)=> directivesName[director.directive] = director.name )
     const professorsInfo = [];
 
     const directives = await this.directivesModule.find();
@@ -424,7 +427,6 @@ export class UserServices implements UserServicesInterface {
       directiveCountry[directive.name] = directive.country || '';
       directiveCommune[directive.name] = directive.city || '';
       directiveSostenedor[directive.name] = directive.sostenedor.name || '';
-      // directiveSostenedor[directive.name] = ''
     }
 
     for (let i = 0; i < userInfo.length; i++) {
@@ -436,6 +438,7 @@ export class UserServices implements UserServicesInterface {
       info['commune'] = directiveCommune[user.directive];
       info['country'] = directiveCountry[user.directive];
       info['sostenedor'] = directiveSostenedor[user.directive];
+      info['director'] = directivesName[user.directive];
       professorsInfo.push(info);
     }
 
