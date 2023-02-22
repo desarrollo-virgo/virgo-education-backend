@@ -8,4 +8,6 @@ export class VideoServiceInterface {
   getFiles: (video) => Promise<any>;
   deleteFile: (video, file) => Promise<any>;
   getVideosForDirective: (directiva) => Promise<any>;
+  deleteVideo: (idVideo, idCourse) => Promise<any>;
+  verifyUploadVideo: (idVideo) => Promise<any>;
 }

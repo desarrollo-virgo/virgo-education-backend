@@ -2,6 +2,7 @@ import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { VideoServiceInterface } from 'src/context/videos/application/videosServiceIterface';
+import { Course, CoursesDocument } from '../db/mongo/schemas/course.schema';
 import {
   Directives,
   DirectivesDocument,
@@ -22,6 +23,7 @@ export class VideosServices implements VideoServiceInterface {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Question.name) private questionsModel: Model<QuestionDocument>,
     @InjectModel(Directives.name) private directive: Model<DirectivesDocument>,
+    @InjectModel(Course.name) private course: Model<CoursesDocument>,
   ) {}
   async updateVideo(id, dataToUpdate) {
     await this.videoModel.findByIdAndUpdate(id, { ...dataToUpdate });
@@ -168,6 +170,30 @@ export class VideosServices implements VideoServiceInterface {
     await containerFile.delete();
   }
 
+  async deleteVideoStorage(name) {
+    const blobClientService = BlobServiceClient.fromConnectionString(
+      this.azureConnection,
+    );
+    const containerName = 'videos';
+    const containerClient = blobClientService.getContainerClient(containerName);
+    const containerFile = containerClient.getBlockBlobClient(name);
+    await containerFile.delete();
+  }
+
+  async deleteVideo(idVideo, idCourse) {
+    const video = await this.videoModel.findById(idVideo);
+    const course = await this.course.findById(idCourse);
+    await this.deleteFileStorage(video.url);
+
+    const newListVideos = course.videos.filter((video) => {
+      return video !== idVideo;
+    });
+    course.videos = newListVideos;
+    course.save();
+    video.delete();
+    return course;
+  }
+
   async deleteFile(video, idFile) {
     const result = await this.videoModel.findById(video);
     const nameFile: any = result.files.filter((file) => {
@@ -193,5 +219,10 @@ export class VideosServices implements VideoServiceInterface {
     return await this.directive
       .findById(idDirectiva)
       .populate('excludeCourses');
+  }
+
+  async verifyUploadVideo(idVideo) {
+    const result = await this.videoModel.findById(idVideo);
+    return result.uploaded;
   }
 }

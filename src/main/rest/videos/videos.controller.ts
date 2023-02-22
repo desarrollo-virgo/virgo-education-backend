@@ -48,6 +48,16 @@ export class VideosController {
     }
   }
 
+  @Get('/:idVideo/verifyUpload')
+  async verifyUploadVideo(@Param() params: any, @Body() body) {
+    const { idVideo } = params;
+    try {
+      return await this.videos.verifyUploadVideo(idVideo);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get('/:idVideo/questions')
   async getQuestions(@Param() params: any, @Body() body, @Query() query) {
     const { idVideo } = params;
@@ -75,8 +85,12 @@ export class VideosController {
     @UploadedFile() file: Express.Multer.File,
     @Param() data: any,
   ) {
-    const { idVideo } = data;
-    return await this.videos.uploadFile(file, idVideo);
+    try {
+      const { idVideo } = data;
+      return await this.videos.uploadFile(file, idVideo);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get('/:idVideo/files')
@@ -94,6 +108,16 @@ export class VideosController {
     const { idVideo, idFile } = params;
     try {
       return await this.videos.deleteFile(idVideo, idFile);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('/:idVideo/course/:idCourse')
+  async deleteVideo(@Param() params) {
+    const { idVideo, idCourse } = params;
+    try {
+      return await this.videos.deleteVideo(idVideo, idCourse);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
