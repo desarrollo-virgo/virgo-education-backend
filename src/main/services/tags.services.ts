@@ -8,9 +8,9 @@ export class TagsServices implements TagServicesInterfaces {
 
   async getTags() {
     const result = await this.tagsModel.find({});
-    const tags = result.map((tag) => {
-      return tag.name;
-    });
-    return tags;
+    // const tags = result.map((tag) => {
+    //   return tag.name;
+    // });
+    return result;
   }
 }
