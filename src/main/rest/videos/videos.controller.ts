@@ -113,16 +113,6 @@ export class VideosController {
     }
   }
 
-  @Delete('/:idVideo/course/:idCourse')
-  async deleteVideo(@Param() params) {
-    const { idVideo, idCourse } = params;
-    try {
-      return await this.videos.deleteVideo(idVideo, idCourse);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
   @Get('/directive/:idDirectiva')
   async getVideosForDirective(@Param() params) {
     const { idDirectiva } = params;

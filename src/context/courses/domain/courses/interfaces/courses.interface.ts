@@ -19,4 +19,5 @@ export interface courseServicesInterface {
   uploadCover: (file, video) => Promise<any>;
   uploadVideo: (file, video) => Promise<any>;
   getCoursesForDirective: (directive) => Promise<any>;
+  deleteVideo: (course, video) => Promise<any>;
 }

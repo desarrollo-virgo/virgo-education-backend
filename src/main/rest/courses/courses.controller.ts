@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -121,6 +122,16 @@ export class CoursesController {
     const { idDirectiva } = params;
     try {
       return await this.courses.getCoursesForDirective(idDirectiva);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('/:idCourse/video/:idVideo')
+  async deleteVideo(@Param() params) {
+    const { idVideo, idCourse } = params;
+    try {
+      return await this.courses.deleteVideo(idVideo, idCourse);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

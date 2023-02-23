@@ -198,4 +198,9 @@ export class Courses {
     const response = await this.services.getCoursesForDirective(idDirectiva);
     return this.createResponse(response);
   }
+
+  async deleteVideo(idVideo, idCourse) {
+    const response = await this.services.deleteVideo(idVideo, idCourse);
+    return this.createResponse(response);
+  }
 }

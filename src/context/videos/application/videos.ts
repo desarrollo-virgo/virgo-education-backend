@@ -63,11 +63,6 @@ export class Videos {
     return this.createResponse(response);
   }
 
-  async deleteVideo(idVideo, idCourse) {
-    const response = await this.services.deleteVideo(idVideo, idCourse);
-    return this.createResponse(response);
-  }
-
   async verifyUploadVideo(idVideo) {
     const response = await this.services.verifyUploadVideo(idVideo);
     return this.createResponse(response);

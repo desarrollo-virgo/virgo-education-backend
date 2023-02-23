@@ -200,4 +200,29 @@ export class CoursesServices implements courseServicesInterface {
     });
     return result;
   }
+
+  async deleteVideo(idVideo, idCourse) {
+    const video = await this.videoModel.findById(idVideo);
+    const course = await this.courseModel.findById(idCourse);
+    const newListVideos = course.videos.filter((video: any) => {
+      return video._id.toString() !== idVideo;
+    });
+    course.videos = newListVideos;
+    course.save();
+    video.delete();
+    const file = video.url.split('/');
+    const nameFile = file[file.length - 1];
+    await this.deleteFileStorage(nameFile);
+    return video;
+  }
+
+  async deleteFileStorage(name) {
+    const blobClientService = BlobServiceClient.fromConnectionString(
+      this.azureConnection,
+    );
+    const containerName = 'videos';
+    const containerClient = blobClientService.getContainerClient(containerName);
+    const containerFile = containerClient.getBlockBlobClient(name);
+    await containerFile.delete();
+  }
 }
