@@ -51,10 +51,13 @@ export class UserServices implements UserServicesInterface {
     const directive = await this.directivesModule.find({
       name: user.directive,
     });
-    user['directiveDetail'] = directive[0].toObject();
-    user['directiveDetail']['id'] = user['directiveDetail']['_id'];
-    delete user['directiveDetail']['_id'];
-    delete user['directiveDetail']['__v'];
+    if (directive.length > 0) {
+      user['directiveDetail'] = directive[0].toObject();
+      user['directiveDetail']['id'] = user['directiveDetail']['_id'];
+      delete user['directiveDetail']['_id'];
+      delete user['directiveDetail']['__v'];
+    }
+
     return user;
   }
 
