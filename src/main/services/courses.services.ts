@@ -2,7 +2,6 @@ import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { uuid } from 'uuidv4';
-import utf8 from 'utf8';
 import { courseServicesInterface } from 'src/context/courses/domain/courses/interfaces/courses.interface';
 import {
   Course,
