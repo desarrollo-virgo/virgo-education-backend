@@ -2,6 +2,7 @@ import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { uuid } from 'uuidv4';
+import utf8 from 'utf8';
 import { courseServicesInterface } from 'src/context/courses/domain/courses/interfaces/courses.interface';
 import {
   Course,
@@ -118,7 +119,10 @@ export class CoursesServices implements courseServicesInterface {
 
   async uploadCover(file: Express.Multer.File, course) {
     const containerName = 'images';
-    const fileParts = file.originalname.split('.');
+    const originName = Buffer.from(file.originalname, 'latin1').toString(
+      'utf8',
+    );
+    const fileParts = originName.split('.');
     const extension = fileParts[fileParts.length - 1];
     const fileName = `${course}-cover.${extension}`;
     const blobClient = await this.getBlobClient(fileName, containerName);
@@ -130,6 +134,9 @@ export class CoursesServices implements courseServicesInterface {
 
   async uploadVideo(file: Express.Multer.File, course) {
     const containerName = 'videos';
+    file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+      'utf8',
+    );
     const fileParts = file.originalname.split('.');
     const extension = fileParts[fileParts.length - 1];
     const fileName = `${course}-${uuid()}`;
