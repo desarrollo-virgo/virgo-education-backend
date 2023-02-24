@@ -139,7 +139,7 @@ export class UserServices implements UserServicesInterface {
   async setInProgressTimeVideo(user, idVideo, idCourse, progress) {
     const indexVideo = user.inProgress.findIndex((inprogress) => {
       return (
-        inprogress.video.id == idVideo || inprogress.course.id === idCourse
+        inprogress.video?.id == idVideo || inprogress.course.id === idCourse
       );
     });
     if (indexVideo >= 0) {
