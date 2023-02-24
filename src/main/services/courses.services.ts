@@ -118,10 +118,7 @@ export class CoursesServices implements courseServicesInterface {
 
   async uploadCover(file: Express.Multer.File, course) {
     const containerName = 'images';
-    const originName = Buffer.from(file.originalname, 'latin1').toString(
-      'utf8',
-    );
-    const fileParts = originName.split('.');
+    const fileParts = file.originalname.split('.');
     const extension = fileParts[fileParts.length - 1];
     const fileName = `${course}-cover.${extension}`;
     const blobClient = await this.getBlobClient(fileName, containerName);
