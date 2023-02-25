@@ -99,7 +99,7 @@ export class VideosServices implements VideoServiceInterface {
     });
     for (let index = 0; index < dataUser.scored.length; index++) {
       const videoScored = dataUser.scored[index];
-      if (videoScored.video.id === idVideo) {
+      if (videoScored.video?.id === idVideo) {
         throw new Error('El usuario ya puntuo esta clase');
       }
     }
