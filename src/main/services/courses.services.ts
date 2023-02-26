@@ -111,6 +111,7 @@ export class CoursesServices implements courseServicesInterface {
     const blobClientService = BlobServiceClient.fromConnectionString(
       this.azureConnection,
     );
+    blobClientService.setProperties({ defaultServiceVersion: '2019-02-02' });
     const containerClient = blobClientService.getContainerClient(containerName);
     const blobClient = containerClient.getBlockBlobClient(imageName);
     return blobClient;
