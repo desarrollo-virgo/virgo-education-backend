@@ -145,6 +145,7 @@ export class UserServices implements UserServicesInterface {
     if (indexVideo >= 0) {
       user.inProgress[indexVideo].video = idVideo;
       user.inProgress[indexVideo].progress = progress;
+      user.inProgress[indexVideo].num = num;
       return user.save();
     }
 
