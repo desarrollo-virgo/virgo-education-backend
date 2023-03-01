@@ -51,10 +51,13 @@ export class UserServices implements UserServicesInterface {
     const directive = await this.directivesModule.find({
       name: user.directive,
     });
-    user['directiveDetail'] = directive[0].toObject();
-    user['directiveDetail']['id'] = user['directiveDetail']['_id'];
-    delete user['directiveDetail']['_id'];
-    delete user['directiveDetail']['__v'];
+    if (directive.length > 0) {
+      user['directiveDetail'] = directive[0].toObject();
+      user['directiveDetail']['id'] = user['directiveDetail']['_id'];
+      delete user['directiveDetail']['_id'];
+      delete user['directiveDetail']['__v'];
+    }
+
     return user;
   }
 
@@ -123,29 +126,30 @@ export class UserServices implements UserServicesInterface {
       });
 
     if (user.inProgress.length === 0) {
-      return this.saveVideoInProgress(user, idCourse, idVideo, progress);
+      return this.saveVideoInProgress(user, idCourse, idVideo, progress, num);
     }
 
     if (finished) {
       return await this.saveFinishedVideo(idCourse, num, user, data, idVideo);
     }
 
-    return await this.setInProgressTimeVideo(user, idVideo, idCourse, progress);
+    return await this.setInProgressTimeVideo(user, idVideo, idCourse, progress, num);
   }
 
-  async setInProgressTimeVideo(user, idVideo, idCourse, progress) {
+  async setInProgressTimeVideo(user, idVideo, idCourse, progress, num) {
     const indexVideo = user.inProgress.findIndex((inprogress) => {
       return (
-        inprogress.video.id == idVideo || inprogress.course.id === idCourse
+        inprogress.video?.id == idVideo || inprogress.course.id === idCourse
       );
     });
     if (indexVideo >= 0) {
       user.inProgress[indexVideo].video = idVideo;
       user.inProgress[indexVideo].progress = progress;
+      user.inProgress[indexVideo].num = num;
       return user.save();
     }
 
-    return this.saveVideoInProgress(user, idCourse, idVideo, progress);
+    return this.saveVideoInProgress(user, idCourse, idVideo, progress, num);
   }
 
   async saveFinishedVideo(idCourse, num, user, data, idVideo) {
@@ -206,14 +210,14 @@ export class UserServices implements UserServicesInterface {
     }
   }
 
-  saveVideoInProgress(user, idCourse, idVideo, progress) {
+  saveVideoInProgress(user, idCourse, idVideo, progress, num) {
     const date = new Date();
     const dataProgress = {
       course: idCourse,
       video: idVideo,
       progress,
       date,
-      num: 1,
+      num: num,
     };
     user.inProgress = user.inProgress.concat(dataProgress);
     return user.save();
