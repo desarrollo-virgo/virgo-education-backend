@@ -31,13 +31,13 @@ export class Users {
       scored: user.scored,
     };
 
-    const excludeCourses = []
-    for (let i = 0; i < userData['directive']['excludeCourses'].length; i++) {
-      const element = userData['directive']['excludeCourses'][i];
-      excludeCourses.push(element.toString())
-    }
+    // const excludeCourses = []
+    // for (let i = 0; i < userData['directive']['excludeCourses'].length; i++) {
+    //   const element = userData['directive']['excludeCourses'][i];
+    //   excludeCourses.push(element.toString())
+    // }
 
-    userData['inprogress'] = userData['inprogress'].filter((course:any)=>!excludeCourses.includes(course.course.id))
+    // userData['inprogress'] = userData['inprogress'].filter((course:any)=>!excludeCourses.includes(course.course.id))
 
     return this.createResponse(userData);
   }
