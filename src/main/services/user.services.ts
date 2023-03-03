@@ -48,6 +48,8 @@ export class UserServices implements UserServicesInterface {
         path: 'finished.course',
         model: 'Course',
       });
+    console.log('iduser ', idUser);
+    console.log('users : ', user);
     const directive = await this.directivesModule.find({
       name: user.directive,
     });
@@ -133,7 +135,13 @@ export class UserServices implements UserServicesInterface {
       return await this.saveFinishedVideo(idCourse, num, user, data, idVideo);
     }
 
-    return await this.setInProgressTimeVideo(user, idVideo, idCourse, progress, num);
+    return await this.setInProgressTimeVideo(
+      user,
+      idVideo,
+      idCourse,
+      progress,
+      num,
+    );
   }
 
   async setInProgressTimeVideo(user, idVideo, idCourse, progress, num) {
@@ -324,9 +332,8 @@ export class UserServices implements UserServicesInterface {
   }
 
   async generateCertificate(data) {
-
-    let course = await this.courseModule.findById(data.courseId)
-    let expert = course['expert'] || ''
+    let course = await this.courseModule.findById(data.courseId);
+    let expert = course['expert'] || '';
 
     let certificate_template = certificate.replace(
       '[%COURSE%]',
@@ -344,12 +351,9 @@ export class UserServices implements UserServicesInterface {
       '[%DATE%]',
       data.courseDate.split('T')[0],
     );
-    const browser = await puppeteer.launch({ 
-      headless: true ,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-      ]
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
     await page.setContent(certificate_template, {
@@ -414,11 +418,12 @@ export class UserServices implements UserServicesInterface {
   }
 
   async getInfoProfessors() {
-
     const userInfo = await this.userModule.find({ profile: 'profesor' });
     const directorsInfo = await this.userModule.find({ profile: 'director' });
-    const directivesName = {}
-    directorsInfo.map( (director)=> directivesName[director.directive] = director.name )
+    const directivesName = {};
+    directorsInfo.map(
+      (director) => (directivesName[director.directive] = director.name),
+    );
     const professorsInfo = [];
 
     const directives = await this.directivesModule.find();
