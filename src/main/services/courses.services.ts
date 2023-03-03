@@ -122,6 +122,7 @@ export class CoursesServices implements courseServicesInterface {
     const fileParts = file.originalname.split('.');
     const extension = fileParts[fileParts.length - 1];
     const fileName = `${course}-cover.${extension}`;
+    await this.deleteFileStorage(fileName, containerName);
     const blobClient = await this.getBlobClient(fileName, containerName);
     const url = `${baseurlStore}/images/${fileName}`;
     await this.updateCourse(course, { cover: url });
@@ -207,6 +208,7 @@ export class CoursesServices implements courseServicesInterface {
   }
 
   async deleteVideo(idVideo, idCourse) {
+    const containerName = 'videos';
     const video = await this.videoModel.findById(idVideo);
     const course = await this.courseModel.findById(idCourse);
     const newListVideos = course.videos.filter((video: any) => {
@@ -217,15 +219,14 @@ export class CoursesServices implements courseServicesInterface {
     video.delete();
     const file = video.url.split('/');
     const nameFile = file[file.length - 1];
-    await this.deleteFileStorage(nameFile);
+    await this.deleteFileStorage(nameFile, containerName);
     return video;
   }
 
-  async deleteFileStorage(name) {
+  async deleteFileStorage(name, containerName) {
     const azureConnection = this.config.get('azureConnection');
     const blobClientService =
       BlobServiceClient.fromConnectionString(azureConnection);
-    const containerName = 'videos';
     const containerClient = blobClientService.getContainerClient(containerName);
     const containerFile = containerClient.getBlockBlobClient(name);
     await containerFile.delete();
