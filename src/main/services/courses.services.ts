@@ -125,7 +125,7 @@ export class CoursesServices implements courseServicesInterface {
     const blobClient = await this.getBlobClient(fileName, containerName);
     const url = `${baseurlStore}/images/${fileName}`;
     await this.updateCourse(course, { cover: url });
-    await blobClient.uploadData(file.buffer);
+    const blob = await blobClient.uploadData(file.buffer);
     return url;
   }
 
