@@ -19,6 +19,12 @@ export class Videos {
         description: data.description,
       };
     }
+
+    if (data?.duration) {
+      dataToUpdate = {
+        duration: data.duration,
+      };
+    }
     await this.services.updateVideo(id, dataToUpdate);
     return this.createResponse();
   }
