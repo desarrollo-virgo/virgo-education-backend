@@ -385,6 +385,7 @@ export class UserServices implements UserServicesInterface {
       completedRoutes: 0,
       rank: 'Bronze',
       completedCourses: 0,
+      coursesNames: []
     };
 
     const userInfo = await this.userModule.findById(idUser);
@@ -402,11 +403,17 @@ export class UserServices implements UserServicesInterface {
     const coursesInfo = await this.courseModule.find({ id: coursesId });
     const videosId = [];
     const routesId = [];
+    const coursesNames = [];
 
     coursesInfo.map((value, index) => {
       videosId.push(value['videos']);
-      routesId.push(value['route']);
+      coursesNames.push(value['name']);
+      if (value['route'].length > 0)routesId.push(value['route']);
+      
     });
+
+    // userProgress['coursesNames'] = coursesNames.join("\n")
+    userProgress['coursesNames'] = coursesNames
     userProgress['completedRoutes'] = [...new Set(routesId)].length;
 
     const videosInfo = await this.videoModule.find({ id: videosId });
