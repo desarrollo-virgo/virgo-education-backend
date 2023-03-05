@@ -37,6 +37,7 @@ export class CoursesServices implements courseServicesInterface {
       .populate('videos')
       .populate('category')
       .populate('route')
+      .populate('tags')
       .transform((res) => {
         const responseTransform = res.toJSON();
         responseTransform['id'] = responseTransform['_id'];
@@ -224,11 +225,16 @@ export class CoursesServices implements courseServicesInterface {
   }
 
   async deleteFileStorage(name, containerName) {
-    const azureConnection = this.config.get('azureConnection');
-    const blobClientService =
-      BlobServiceClient.fromConnectionString(azureConnection);
-    const containerClient = blobClientService.getContainerClient(containerName);
-    const containerFile = containerClient.getBlockBlobClient(name);
-    await containerFile.delete();
+    try {
+      const azureConnection = this.config.get('azureConnection');
+      const blobClientService =
+        BlobServiceClient.fromConnectionString(azureConnection);
+      const containerClient =
+        blobClientService.getContainerClient(containerName);
+      const containerFile = containerClient.getBlockBlobClient(name);
+      await containerFile.delete();
+    } catch (error) {
+      return true;
+    }
   }
 }

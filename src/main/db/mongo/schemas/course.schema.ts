@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { Category } from './category.schema';
 import { RouteCourses } from './route.schema';
+import { Tag } from './tags.schema';
 import { Video } from './video.schema';
 
 export type CoursesDocument = HydratedDocument<Course>;
@@ -14,8 +15,8 @@ export class Course {
   @Prop()
   description: string;
 
-  @Prop()
-  tags: string[];
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Tag' })
+  tags: Tag[];
 
   @Prop()
   score: number;
