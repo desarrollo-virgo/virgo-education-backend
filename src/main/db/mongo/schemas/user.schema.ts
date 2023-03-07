@@ -17,6 +17,9 @@ export class User {
   @Prop({ type: String, ref: 'Directives' })
   directive: string;
 
+  @Prop({ type: [String], index: true, ref: 'Directives' })
+  directives: string[];
+
   @Prop()
   profile: string;
 

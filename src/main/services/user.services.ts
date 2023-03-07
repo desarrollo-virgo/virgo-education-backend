@@ -296,18 +296,39 @@ export class UserServices implements UserServicesInterface {
     }
     for (let index = 0; index < result.length; index++) {
       const element = result[index];
+      const email = element.correo.trim().toLowerCase();
+      const directive = infoInstitucion.institucion.trim().toLowerCase();
       const userData = {
         name: element.nombre.trim().toLowerCase(),
-        email: element.correo.trim().toLowerCase(),
+        email,
         profile: element.perfil.trim().toLowerCase(),
-        directive: infoInstitucion.institucion.trim().toLowerCase(),
+        directive,
         rut: element.rut.trim().toLowerCase(),
       };
-      await this.saveUser(userData);
+      if (element.perfil.trim().toLowerCase() === 'sostenedor') {
+        await this.saveSostenedor(userData);
+      } else {
+        await this.saveUser(userData);
+      }
     }
     return result;
   }
 
+  async saveSostenedor(userData) {
+    const userSostenedor = await this.userModule.findOne({
+      email: userData.email,
+    });
+    if (userSostenedor) {
+      if (!userSostenedor.directives.includes(userData.directive)) {
+        userSostenedor.directives.push(userData.directive);
+        delete userData.directive;
+        await userSostenedor.save();
+      }
+    } else {
+      userData.directives = [userData.directive];
+      await this.saveUser(userData);
+    }
+  }
   async addWishList(idUser, idCourse) {
     const result = await this.userModule.findById(idUser);
     result.wishList.push(idCourse);
@@ -385,7 +406,7 @@ export class UserServices implements UserServicesInterface {
       completedRoutes: 0,
       rank: 'Bronze',
       completedCourses: 0,
-      coursesNames: []
+      coursesNames: [],
     };
 
     const userInfo = await this.userModule.findById(idUser);
@@ -408,12 +429,11 @@ export class UserServices implements UserServicesInterface {
     coursesInfo.map((value, index) => {
       videosId.push(value['videos']);
       coursesNames.push(value['name']);
-      if (value['route'].length > 0)routesId.push(value['route']);
-      
+      if (value['route'].length > 0) routesId.push(value['route']);
     });
 
     // userProgress['coursesNames'] = coursesNames.join("\n")
-    userProgress['coursesNames'] = coursesNames
+    userProgress['coursesNames'] = coursesNames;
     userProgress['completedRoutes'] = [...new Set(routesId)].length;
 
     const videosInfo = await this.videoModule.find({ id: videosId });
