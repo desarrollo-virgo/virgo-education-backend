@@ -68,7 +68,6 @@ export class Courses {
   async addVideo(data, idCourse) {
     data.course = idCourse;
     const { _id } = await this.services.addVideo(data);
-    console.log(_id);
     return this.addVideosToCourse(_id, idCourse);
   }
 

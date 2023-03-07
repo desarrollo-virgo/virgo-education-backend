@@ -18,6 +18,9 @@ export class User {
   directive: string;
 
   @Prop()
+  directives: any[];
+
+  @Prop()
   profile: string;
 
   @Prop()
