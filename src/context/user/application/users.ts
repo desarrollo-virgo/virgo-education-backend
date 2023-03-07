@@ -20,17 +20,21 @@ export class Users {
 
   async getUser(idUser) {
     const user = await this.services.getUser(idUser);
+
     const userData = {
       id: user.id,
       nombre: user.name,
       email: user.email,
       directive: user.directiveDetail,
+      directives: user.directives || [],
       perfil: user.profile,
       inprogress: user.inProgress,
       finished: user.finished,
       scored: user.scored,
     };
 
+    
+    
     // const excludeCourses = []
     // for (let i = 0; i < userData['directive']['excludeCourses'].length; i++) {
     //   const element = userData['directive']['excludeCourses'][i];
@@ -38,7 +42,6 @@ export class Users {
     // }
 
     // userData['inprogress'] = userData['inprogress'].filter((course:any)=>!excludeCourses.includes(course.course.id))
-
     return this.createResponse(userData);
   }
 
