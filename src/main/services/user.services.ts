@@ -162,7 +162,13 @@ export class UserServices implements UserServicesInterface {
 
   async saveFinishedVideo(idCourse, num, user, data, idVideo) {
     // agregar videos a la tabla de videos finalizados
-    await this.addVideoFinishedToModel(idCourse, num, user, data, idVideo);
+    const finished = await this.addVideoFinishedToModel(
+      idCourse,
+      num,
+      user,
+      data,
+      idVideo,
+    );
 
     // agregar el siguiente video a inprogress
 
@@ -189,7 +195,10 @@ export class UserServices implements UserServicesInterface {
       });
       user.inProgress = inProgressNew.length === 0 ? undefined : inProgressNew;
     }
-    return user.save();
+    let resultSave = await user.save();
+    resultSave = JSON.parse(JSON.stringify(resultSave));
+    resultSave['finishedNow'] = finished;
+    return resultSave;
   }
 
   async addVideoFinishedToModel(idCourse, num, user, data, idVideo) {
@@ -215,7 +224,9 @@ export class UserServices implements UserServicesInterface {
 
     if (videoCourseFinished.length === videosFromCourse) {
       await this.addFinishedCourse(user.id, data);
+      return { finished: true };
     }
+    return { finished: false };
   }
 
   saveVideoInProgress(user, idCourse, idVideo, progress, num) {
