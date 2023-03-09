@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Date, HydratedDocument } from 'mongoose';
 import { Course } from './course.schema';
 
-export type CategoryDocument = HydratedDocument<FinishedCourses>;
+export type FinishedCourseDocument = HydratedDocument<FinishedCourses>;
 
 @Schema({ timestamps: true })
 export class FinishedCourses {

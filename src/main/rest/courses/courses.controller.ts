@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   HttpException,
   HttpStatus,
   Param,
@@ -132,6 +133,17 @@ export class CoursesController {
     const { idVideo, idCourse } = params;
     try {
       return await this.courses.deleteVideo(idVideo, idCourse);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('/:idCourse/videosFinished')
+  async getFinishedVideoByUser(@Param() params, @Headers() headers) {
+    const { idCourse } = params;
+    const { userid } = headers;
+    try {
+      return await this.courses.getFinishedVideoByUser(idCourse, userid);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

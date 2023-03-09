@@ -202,4 +202,12 @@ export class Courses {
     const response = await this.services.deleteVideo(idVideo, idCourse);
     return this.createResponse(response);
   }
+
+  async getFinishedVideoByUser(idCourse, userid) {
+    const response = await this.services.getFinishedVideoByUser(
+      idCourse,
+      userid,
+    );
+    return this.createResponse(response);
+  }
 }

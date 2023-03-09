@@ -18,6 +18,11 @@ import {
   Directives,
   DirectivesDocument,
 } from '../db/mongo/schemas/directive.schema';
+
+import {
+  VideoFinished,
+  VideoFinishedDocument,
+} from '../db/mongo/schemas/videosFinished.schema';
 export class CoursesServices implements courseServicesInterface {
   constructor(
     @InjectModel(Course.name) private courseModel: Model<CoursesDocument>,
@@ -26,6 +31,8 @@ export class CoursesServices implements courseServicesInterface {
     private routeModel: Model<RouteCoursesDocument>,
     @InjectModel(Directives.name) private directive: Model<DirectivesDocument>,
     private readonly config: ConfigService,
+    @InjectModel(VideoFinished.name)
+    private videoFinished: Model<VideoFinishedDocument>,
   ) {}
   async addCourse(data) {
     return await this.courseModel.create(data);
@@ -236,5 +243,13 @@ export class CoursesServices implements courseServicesInterface {
     } catch (error) {
       return true;
     }
+  }
+
+  async getFinishedVideoByUser(idCourse, userid) {
+    const finishedVideos = await this.videoFinished.find({
+      user: userid,
+      course: idCourse,
+    });
+    return finishedVideos;
   }
 }
