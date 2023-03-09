@@ -48,8 +48,6 @@ export class UserServices implements UserServicesInterface {
         path: 'finished.course',
         model: 'Course',
       });
-    console.log('iduser ', idUser);
-    console.log('users : ', user);
     const directive = await this.directivesModule.find({
       name: user.directive,
     });
@@ -411,6 +409,7 @@ export class UserServices implements UserServicesInterface {
   }
 
   async getProgressInfo(idUser) {
+  
     const userProgress = {
       stars: 0,
       studyHours: 0,
@@ -425,14 +424,15 @@ export class UserServices implements UserServicesInterface {
     if (finishedCourses.length == 0) return userProgress;
     const coursesId = [];
     finishedCourses.map((value, index) => {
-      coursesId.push(value['course']);
+      coursesId.push(value['course'].toString());
     });
 
     userProgress['completedCourses'] = coursesId.length;
     userProgress['stars'] = coursesId.length;
     userProgress['rank'] = this.getRanking(userProgress['stars']);
 
-    const coursesInfo = await this.courseModule.find({ id: coursesId });
+    const coursesInfo_ = await this.courseModule.find({ id: coursesId });
+    const coursesInfo = coursesInfo_.filter((course)=>coursesId.includes(course._id.toString()))
     const videosId = [];
     const routesId = [];
     const coursesNames = [];
@@ -443,7 +443,6 @@ export class UserServices implements UserServicesInterface {
       if (value['route'].length > 0) routesId.push(value['route']);
     });
 
-    // userProgress['coursesNames'] = coursesNames.join("\n")
     userProgress['coursesNames'] = coursesNames;
     userProgress['completedRoutes'] = [...new Set(routesId)].length;
 
@@ -477,6 +476,7 @@ export class UserServices implements UserServicesInterface {
     }
 
     for (let i = 0; i < userInfo.length; i++) {
+      
       const user = userInfo[i];
       const info = await this.getProgressInfo(user['_id']);
       info['name'] = user.name;
