@@ -16,6 +16,7 @@ import {
   Directives,
   DirectivesDocument,
 } from '../db/mongo/schemas/directive.schema';
+import * as daysjs from 'dayjs';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const puppeteer = require('puppeteer');
 
@@ -364,7 +365,8 @@ export class UserServices implements UserServicesInterface {
   async generateCertificate(data) {
     let course = await this.courseModule.findById(data.courseId);
     let expert = course['expert'] || '';
-
+    const nDate = new Date(data.courseDate);
+    const nDayFromCL = daysjs(nDate).hour(8).format();
     let certificate_template = certificate.replace(
       '[%COURSE%]',
       data.courseName.toUpperCase(),
@@ -379,7 +381,7 @@ export class UserServices implements UserServicesInterface {
     );
     certificate_template = certificate_template.replace(
       '[%DATE%]',
-      data.courseDate.split('T')[0],
+      nDayFromCL.split('T')[0],
     );
     const browser = await puppeteer.launch({
       headless: true,
@@ -409,7 +411,6 @@ export class UserServices implements UserServicesInterface {
   }
 
   async getProgressInfo(idUser) {
-  
     const userProgress = {
       stars: 0,
       studyHours: 0,
@@ -432,7 +433,9 @@ export class UserServices implements UserServicesInterface {
     userProgress['rank'] = this.getRanking(userProgress['stars']);
 
     const coursesInfo_ = await this.courseModule.find({ id: coursesId });
-    const coursesInfo = coursesInfo_.filter((course)=>coursesId.includes(course._id.toString()))
+    const coursesInfo = coursesInfo_.filter((course) =>
+      coursesId.includes(course._id.toString()),
+    );
     const videosId = [];
     const routesId = [];
     const coursesNames = [];
@@ -476,7 +479,6 @@ export class UserServices implements UserServicesInterface {
     }
 
     for (let i = 0; i < userInfo.length; i++) {
-      
       const user = userInfo[i];
       const info = await this.getProgressInfo(user['_id']);
       info['name'] = user.name;
