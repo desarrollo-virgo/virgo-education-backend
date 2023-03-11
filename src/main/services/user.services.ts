@@ -441,19 +441,21 @@ export class UserServices implements UserServicesInterface {
     const coursesNames = [];
 
     coursesInfo.map((value, index) => {
-      videosId.push(value['videos']);
+      videosId.push(value['videos'].toString().split(","));
       coursesNames.push(value['name']);
       if (value['route'].length > 0) routesId.push(value['route']);
     });
-
     userProgress['coursesNames'] = coursesNames;
     userProgress['completedRoutes'] = [...new Set(routesId)].length;
-
-    const videosInfo = await this.videoModule.find({ id: videosId });
+    const videosId_ = videosId.flat()
+    const videosInfo = await this.videoModule.find({ id: videosId_ });
     videosInfo.map((value, index) => {
-      userProgress['studyHours'] += (value['duration'] || 0) / 3600;
+      
+      if(videosId_.includes(value['_id'].toString())){
+        userProgress['studyHours'] += (value['duration'] || 0) / 3600;
+      }
     });
-
+    userProgress['studyHours'] = parseFloat(userProgress['studyHours'].toFixed(3))
     return userProgress;
   }
 
