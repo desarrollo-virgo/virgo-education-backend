@@ -32,16 +32,6 @@ export class Users {
       finished: user.finished,
       scored: user.scored,
     };
-
-    
-    
-    // const excludeCourses = []
-    // for (let i = 0; i < userData['directive']['excludeCourses'].length; i++) {
-    //   const element = userData['directive']['excludeCourses'][i];
-    //   excludeCourses.push(element.toString())
-    // }
-
-    // userData['inprogress'] = userData['inprogress'].filter((course:any)=>!excludeCourses.includes(course.course.id))
     return this.createResponse(userData);
   }
 

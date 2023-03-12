@@ -153,7 +153,7 @@ export class UserServices implements UserServicesInterface {
       user.inProgress[indexVideo].video = idVideo;
       user.inProgress[indexVideo].progress = progress;
       user.inProgress[indexVideo].num = num;
-      return user.save();
+      return await user.save();
     }
 
     return this.saveVideoInProgress(user, idCourse, idVideo, progress, num);
@@ -170,7 +170,12 @@ export class UserServices implements UserServicesInterface {
     );
 
     // agregar el siguiente video a inprogress
-
+    if (finished.finished) {
+      const inProgressNew = user.inProgress.filter((inpro) => {
+        return inpro.video.id !== idVideo;
+      });
+      user.inProgress = inProgressNew.length === 0 ? undefined : inProgressNew;
+    }
     const date = new Date();
     const course = await this.courseModule
       .findById(idCourse)
@@ -188,11 +193,6 @@ export class UserServices implements UserServicesInterface {
         return inp.course.id == idCourse;
       });
       user.inProgress[indVideo] = dataProgress;
-    } else {
-      const inProgressNew = user.inProgress.filter((inpro) => {
-        return inpro.video.id !== idVideo;
-      });
-      user.inProgress = inProgressNew.length === 0 ? undefined : inProgressNew;
     }
     let resultSave = await user.save();
     resultSave = JSON.parse(JSON.stringify(resultSave));
@@ -210,11 +210,26 @@ export class UserServices implements UserServicesInterface {
     });
 
     if (videoFinishedExist.length === 0) {
-      await this.videoFinishedModule.create({
-        user: user._id,
-        video: idVideo,
-        course: idCourse,
-      });
+      const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+      await this.videoFinishedModule.findOneAndUpdate(
+        {
+          user: user._id,
+          video: idVideo,
+          course: idCourse,
+        },
+        {
+          user: user._id,
+          video: idVideo,
+          course: idCourse,
+        },
+        options,
+      );
+
+      // await this.videoFinishedModule.create({
+      //   user: user._id,
+      //   video: idVideo,
+      //   course: idCourse,
+      // });
     }
     const videoCourseFinished = await this.videoFinishedModule.find({
       course: idCourse,
@@ -228,7 +243,13 @@ export class UserServices implements UserServicesInterface {
     return { finished: false };
   }
 
-  saveVideoInProgress(user, idCourse, idVideo, progress, num) {
+  async saveVideoInProgress(
+    user: UserDocument,
+    idCourse,
+    idVideo,
+    progress,
+    num,
+  ) {
     const date = new Date();
     const dataProgress = {
       course: idCourse,
@@ -238,7 +259,12 @@ export class UserServices implements UserServicesInterface {
       num: num,
     };
     user.inProgress = user.inProgress.concat(dataProgress);
-    return user.save();
+    return await (
+      await user.save()
+    ).populate({
+      path: 'inProgress.course',
+      model: 'Course',
+    });
   }
   existVideo(inProgress: Video[], current) {
     return inProgress.includes(current);
@@ -363,8 +389,8 @@ export class UserServices implements UserServicesInterface {
   }
 
   async generateCertificate(data) {
-    let course = await this.courseModule.findById(data.courseId);
-    let expert = course['expert'] || '';
+    const course = await this.courseModule.findById(data.courseId);
+    const expert = course['expert'] || '';
     const nDate = new Date(data.courseDate);
     const nDayFromCL = daysjs(nDate).hour(8).format();
     let certificate_template = certificate.replace(
