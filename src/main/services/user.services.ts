@@ -446,7 +446,11 @@ export class UserServices implements UserServicesInterface {
       coursesNames: [],
     };
 
-    const userInfo = await this.userModule.findById(idUser);
+    const userInfo = await this.userModule.findById(idUser).populate({
+      path: 'inProgress.course',
+      model: 'Course',
+    });
+    userProgress['inProgress'] = userInfo.inProgress;
     const finishedCourses = userInfo['finished'];
     if (finishedCourses.length == 0) return userProgress;
     const coursesId = [];
