@@ -13,7 +13,6 @@ import {
   RouteCoursesDocument,
 } from '../db/mongo/schemas/route.schema';
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
-import { getVideoDurationInSeconds } from 'get-video-duration';
 import {
   Directives,
   DirectivesDocument,

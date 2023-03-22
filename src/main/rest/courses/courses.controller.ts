@@ -108,7 +108,7 @@ export class CoursesController {
 
   @timeout('600s')
   @Post('/:idCourse/uploadVideo')
-  @UseInterceptors(FileInterceptor('video', { storage: storage }))
+  @UseInterceptors(FileInterceptor('video'))
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
     @Param() data: any,
