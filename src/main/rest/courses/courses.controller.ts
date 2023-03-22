@@ -14,6 +14,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import multer from 'multer';
+import * as timeout from 'connect-timeout';
 import { Courses } from 'src/context/courses/application/courses';
 import {
   CategoryForCoursesDTO,
@@ -21,7 +23,7 @@ import {
   RecommendedCoursesDTO,
   SetInProgressCourseDTO,
 } from './courses.dto';
-
+const storage = multer.memoryStorage();
 @Controller('courses')
 export class CoursesController {
   constructor(private courses: Courses) {}
@@ -95,7 +97,7 @@ export class CoursesController {
     return this.courses.addVideo(data, idCourse);
   }
   @Post('/:idCourse/uploadCover')
-  @UseInterceptors(FileInterceptor('cover'))
+  @UseInterceptors(FileInterceptor('cover', { storage: storage }))
   async upload(
     @UploadedFile() file: Express.Multer.File,
     @Param() data: any,
@@ -104,8 +106,9 @@ export class CoursesController {
     return await this.courses.uploadCover(file, idCourse);
   }
 
+  @timeout('600s')
   @Post('/:idCourse/uploadVideo')
-  @UseInterceptors(FileInterceptor('video'))
+  @UseInterceptors(FileInterceptor('video', { storage: storage }))
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
     @Param() data: any,
