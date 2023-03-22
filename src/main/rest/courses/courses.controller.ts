@@ -14,7 +14,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import multer from 'multer';
 import * as timeout from 'connect-timeout';
 import { Courses } from 'src/context/courses/application/courses';
 import {
@@ -23,7 +22,7 @@ import {
   RecommendedCoursesDTO,
   SetInProgressCourseDTO,
 } from './courses.dto';
-const storage = multer.memoryStorage();
+
 @Controller('courses')
 export class CoursesController {
   constructor(private courses: Courses) {}
