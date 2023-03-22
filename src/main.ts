@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
-  app.use(timeout('2s'));
+  app.use(timeout('600s'));
   // app.use(haltOnTimedout);
   await app.listen(PORT);
 }
