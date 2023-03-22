@@ -14,7 +14,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as timeout from 'connect-timeout';
 import { Courses } from 'src/context/courses/application/courses';
 import {
   CategoryForCoursesDTO,
@@ -105,7 +104,6 @@ export class CoursesController {
     return await this.courses.uploadCover(file, idCourse);
   }
 
-  @timeout('600s')
   @Post('/:idCourse/uploadVideo')
   @UseInterceptors(FileInterceptor('video'))
   async uploadVideo(
