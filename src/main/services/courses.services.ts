@@ -160,19 +160,19 @@ export class CoursesServices implements courseServicesInterface {
       num,
       url,
     };
-    console.log('subiendo archivo...');
-    console.log('guardando archivo');
+    console.log('subiendo archivo...' + file.originalname);
+    console.log('guardando archivo' + file.originalname);
     const resultVideoDB = await this.addVideo(dataVideo);
-    console.log('video guardado');
+    console.log('video guardado' + file.originalname);
     const _id = resultVideoDB.id;
     console.log('antes de agregar ...');
     await this.addVideosToCourse(_id, course);
     blobClient.uploadData(file.buffer).then(async () => {
-      console.log('video listo ......url: ', url);
+      console.log('video listo ......url: ', url, file.originalname);
       // const duration = await getVideoDurationInSeconds(url);
       this.updateVideoAdditionalAttr(_id, 600);
     });
-    console.log('video agregado...');
+    console.log('video agregado...' + file.originalname);
     return resultVideoDB;
   }
 
