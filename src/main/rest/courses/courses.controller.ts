@@ -96,7 +96,7 @@ export class CoursesController {
     return this.courses.addVideo(data, idCourse);
   }
   @Post('/:idCourse/uploadCover')
-  @UseInterceptors(FileInterceptor('cover', { storage: storage }))
+  @UseInterceptors(FileInterceptor('cover'))
   async upload(
     @UploadedFile() file: Express.Multer.File,
     @Param() data: any,
