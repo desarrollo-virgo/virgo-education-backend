@@ -105,7 +105,7 @@ export class CoursesController {
   }
 
   @Post('/:idCourse/uploadVideo')
-  @UseInterceptors(FileInterceptor('video'))
+  @UseInterceptors(FileInterceptor('video', { limits: { fileSize: 60000 } }))
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
     @Param() data: any,
