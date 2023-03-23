@@ -88,8 +88,12 @@ export class CoursesServices implements courseServicesInterface {
     return this.courseModel.create(data);
   }
 
-  addVideo(data) {
-    return this.videoModel.create(data);
+  async addVideo(data) {
+    try {
+      return await this.videoModel.create(data);
+    } catch (error) {
+      console.log(error);
+    }
   }
   async addVideosToCourse(idVideo, idCourse) {
     const course = await this.courseModel.findById(idCourse);
@@ -172,6 +176,13 @@ export class CoursesServices implements courseServicesInterface {
       this.updateVideoAdditionalAttr(_id, 600);
     });
     console.log('video agregado...' + file.originalname);
+    return resultVideoDB;
+  }
+
+  async createVideo(course, data) {
+    const resultVideoDB = await this.addVideo(data);
+    const _id = resultVideoDB.id;
+    await this.addVideosToCourse(_id, course);
     return resultVideoDB;
   }
 

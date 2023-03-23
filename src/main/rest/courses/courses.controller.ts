@@ -42,7 +42,11 @@ export class CoursesController {
     const { idCourse } = data;
     return this.courses.videosFromCourse(idCourse);
   }
-
+  @Post('/:idCourse/video/new')
+  async addVideo(@Body() data, @Param() courseData) {
+    const { idCourse } = courseData;
+    return await this.courses.addVideo(data, idCourse);
+  }
   @Post('/')
   addCourse(@Body() data: any) {
     return this.courses.addCourse(data);
@@ -89,11 +93,6 @@ export class CoursesController {
     return this.courses.addRouteToCourse(idCourse, idRoute);
   }
 
-  @Post('/:idCourse/video')
-  addVideo(@Body() data, @Param() courseData) {
-    const { idCourse } = courseData;
-    return this.courses.addVideo(data, idCourse);
-  }
   @Post('/:idCourse/uploadCover')
   @UseInterceptors(FileInterceptor('cover'))
   async upload(

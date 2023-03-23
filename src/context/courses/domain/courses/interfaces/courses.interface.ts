@@ -10,7 +10,7 @@ export interface courseServicesInterface {
   addCourse: (data) => any;
   getCourses: (id) => any;
   getAllCourses: () => any;
-  addVideo: (data) => any;
+  addVideo: (data) => Promise<any>;
   addVideosToCourse: (idVideo, idCourse) => Promise<any>;
   addCategoryToCourse: (idVideo, idCourse) => Promise<any>;
   addRouteToCourse: (idVideo, idRoute) => Promise<any>;

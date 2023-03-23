@@ -66,13 +66,18 @@ export class Courses {
   }
 
   async addVideo(data, idCourse) {
-    data.course = idCourse;
-    const { _id } = await this.services.addVideo(data);
-    return this.addVideosToCourse(_id, idCourse);
+    try {
+      data.course = idCourse;
+      const video = await this.services.addVideo(data);
+      await this.addVideosToCourse(video._id, idCourse);
+      return video;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  addVideosToCourse(idVideo, idCourse) {
-    return this.services.addVideosToCourse(idVideo, idCourse);
+  async addVideosToCourse(idVideo, idCourse) {
+    return await this.services.addVideosToCourse(idVideo, idCourse);
   }
 
   addCategoryToCourse(idCourse, idCategory) {
