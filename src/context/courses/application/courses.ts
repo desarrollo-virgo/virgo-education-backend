@@ -165,6 +165,8 @@ export class Courses {
         score: video.score,
         urlEmbed: video.url,
         files: video.files,
+        num_score: video.numscore,
+        avg_score: video.avgscore,
       };
     });
     return videosInfo;

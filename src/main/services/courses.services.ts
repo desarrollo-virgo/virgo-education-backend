@@ -55,6 +55,8 @@ export class CoursesServices implements courseServicesInterface {
         });
         responseTransform.videos.forEach((video) => {
           video['id'] = video['_id'];
+          video['numscore'] = video.score.numScore;
+          video['avgscore'] = video.score.averageScore;
           delete video['_id'];
           delete video['__v'];
         });
