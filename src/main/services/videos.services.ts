@@ -202,7 +202,7 @@ export class VideosServices implements VideoServiceInterface {
       return file.id === idFile;
     });
     if (nameFile.length > 0) {
-      await this.deleteFileStorage(nameFile[0].name);
+      await this.deleteFileStorage(video + '-' + nameFile[0].name);
     }
     const newListFile = result.files.filter((file) => {
       return file.id !== idFile;
