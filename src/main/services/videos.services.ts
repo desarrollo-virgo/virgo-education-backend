@@ -1,4 +1,5 @@
 import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { VideoServiceInterface } from 'src/context/videos/application/videosServiceIterface';
@@ -15,8 +16,6 @@ import { User, UserDocument } from '../db/mongo/schemas/user.schema';
 import { Video, VideoDocument } from '../db/mongo/schemas/video.schema';
 
 export class VideosServices implements VideoServiceInterface {
-  azureConnection =
-    'DefaultEndpointsProtocol=https;AccountName=virgostore;AccountKey=Hi3flZFsAiHMLkS4V/x/ZDP9cS3R7hgI4+6L5BVL25Ezf8AiKlzsxLRJpD2kwJYXcmtnhbwBDS1E+ASt6HKGfw==;EndpointSuffix=core.windows.net';
   containerName = 'files';
   constructor(
     @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
@@ -24,6 +23,7 @@ export class VideosServices implements VideoServiceInterface {
     @InjectModel(Question.name) private questionsModel: Model<QuestionDocument>,
     @InjectModel(Directives.name) private directive: Model<DirectivesDocument>,
     @InjectModel(Course.name) private course: Model<CoursesDocument>,
+    private readonly config: ConfigService,
   ) {}
   async updateVideo(id, dataToUpdate) {
     await this.videoModel.findByIdAndUpdate(id, { ...dataToUpdate });
@@ -110,9 +110,9 @@ export class VideosServices implements VideoServiceInterface {
   }
 
   getBlobClient(imageName: string, containerName: string): BlockBlobClient {
-    const blobClientService = BlobServiceClient.fromConnectionString(
-      this.azureConnection,
-    );
+    const azureConnection = this.config.get('azureConnection');
+    const blobClientService =
+      BlobServiceClient.fromConnectionString(azureConnection);
     const containerClient = blobClientService.getContainerClient(containerName);
     const blobClient = containerClient.getBlockBlobClient(imageName);
     return blobClient;
@@ -133,13 +133,14 @@ export class VideosServices implements VideoServiceInterface {
     return resultObj.files;
   }
   async uploadFile(file: Express.Multer.File, video) {
+    const baseurlStore = this.config.get('base_url_store');
     const containerName = 'files';
     const fileParts = file.originalname.split('.');
     const extension = fileParts[fileParts.length - 1];
     const fileName = `${video}-${fileParts[0]}`;
     const _fileName = `${fileName}.${extension}`;
     const blobClient = this.getBlobClient(_fileName, containerName);
-    const url = `https://virgostore.blob.core.windows.net/${containerName}/${_fileName}`;
+    const url = `${baseurlStore}/${containerName}/${_fileName}`;
     const dataFile = {
       name: _fileName,
       url,
@@ -161,9 +162,9 @@ export class VideosServices implements VideoServiceInterface {
   }
 
   async deleteFileStorage(name) {
-    const blobClientService = BlobServiceClient.fromConnectionString(
-      this.azureConnection,
-    );
+    const azureConnection = this.config.get('azureConnection');
+    const blobClientService =
+      BlobServiceClient.fromConnectionString(azureConnection);
     const containerName = 'files';
     const containerClient = blobClientService.getContainerClient(containerName);
     const containerFile = containerClient.getBlockBlobClient(name);
@@ -171,9 +172,9 @@ export class VideosServices implements VideoServiceInterface {
   }
 
   async deleteVideoStorage(name) {
-    const blobClientService = BlobServiceClient.fromConnectionString(
-      this.azureConnection,
-    );
+    const azureConnection = this.config.get('azureConnection');
+    const blobClientService =
+      BlobServiceClient.fromConnectionString(azureConnection);
     const containerName = 'videos';
     const containerClient = blobClientService.getContainerClient(containerName);
     const containerFile = containerClient.getBlockBlobClient(name);
