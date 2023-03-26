@@ -141,8 +141,9 @@ export class VideosServices implements VideoServiceInterface {
     const _fileName = `${fileName}.${extension}`;
     const blobClient = this.getBlobClient(_fileName, containerName);
     const url = `${baseurlStore}/${containerName}/${_fileName}`;
+    const nameToDB = `${fileParts[0]}.${extension}`;
     const dataFile = {
-      name: _fileName,
+      name: nameToDB,
       url,
     };
     console.log('subiendo archivo...');
