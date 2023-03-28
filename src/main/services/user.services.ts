@@ -392,7 +392,8 @@ export class UserServices implements UserServicesInterface {
     const course = await this.courseModule.findById(data.courseId);
     const expert = course['expert'] || '';
     const nDate = new Date(data.courseDate);
-    const nDayFromCL = daysjs(nDate).hour(8).format();
+    const nDayFromCL = daysjs(nDate).format();
+    // const nDayFromCL = nDayFrom.add(8, 'hour').format();
     let certificate_template = certificate.replace(
       '[%COURSE%]',
       data.courseName.toUpperCase(),
